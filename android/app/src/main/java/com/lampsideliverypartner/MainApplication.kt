@@ -1,4 +1,4 @@
-package com.lampsideliverypartner
+package com.freshozapcartdeliverypartner
 
 import android.app.Application
 import com.facebook.react.PackageList

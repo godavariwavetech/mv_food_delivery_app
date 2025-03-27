@@ -10,8 +10,28 @@
     "test": "jest"
   },
   "dependencies": {
+    "@notifee/react-native": "^9.1.8",
+    "@react-native-async-storage/async-storage": "^2.1.2",
+    "@react-native-community/datetimepicker": "^8.3.0",
+    "@react-native-community/masked-view": "^0.1.11",
+    "@react-native-firebase/app": "^21.12.2",
+    "@react-native-firebase/messaging": "^21.12.2",
+    "@react-navigation/drawer": "^7.2.1",
+    "@react-navigation/native": "^7.0.15",
+    "@react-navigation/stack": "^7.1.2",
+    "axios": "^1.8.3",
+    "notifee": "^0.0.1",
     "react": "19.0.0",
-    "react-native": "0.78.0"
+    "react-native": "0.78.0",
+    "react-native-gesture-handler": "^2.24.0",
+    "react-native-image-picker": "^8.2.0",
+    "react-native-reanimated": "^3.17.1",
+    "react-native-responsive-screen": "^1.4.2",
+    "react-native-safe-area-context": "^5.3.0",
+    "react-native-screens": "^4.9.2",
+    "react-native-size-matters": "^0.4.2",
+    "react-native-vector-icons": "^10.2.0",
+    "react-native-version-check": "^3.4.7"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -26,6 +46,7 @@
     "@react-native/typescript-config": "0.78.0",
     "@types/jest": "^29.5.13",
     "@types/react": "^19.0.0",
+    "@types/react-native-version-check": "^3.4.8",
     "@types/react-test-renderer": "^19.0.0",
     "eslint": "^8.19.0",
     "jest": "^29.6.3",

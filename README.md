@@ -1,97 +1,115 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Title
 
-# Getting Started
+Food Delivery Partner App Development
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Objective
 
-## Step 1: Start Metro
+The goal of this project is to develop a mobile application for food delivery partners to manage their deliveries efficiently. The app will allow delivery partners to accept and track orders, update their availability status, navigate to restaurant and customer locations, and receive payments.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Tech Stack
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- **Frontend:** React Native (CLI)
+- **Backend:** Node.js with Express.js
+- **Database:** MySQL
+- **Authentication:** JWT (JSON Web Token)
+- **Navigation:** React Navigation
+- **State Management:** Context API with AsyncStorage
+- **Maps & Geolocation:** Google Maps API
+- **Notifications:** Firebase Cloud Messaging (FCM) with Notifee
+- **Styling:** Styled Components / Tailwind CSS
 
-```sh
-# Using npm
-npm start
+## Completion Instructions
 
-# OR using Yarn
-yarn start
-```
+### Functionality
 
-## Step 2: Build and run your app
+#### Must Have
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+1. **User Authentication**
+   - Login using phone number and password.
+   - JWT authentication with token storage using AsyncStorage.
+2. **Order Management**
+   - View assigned orders.
+   - Accept or reject new orders.
+   - Update order status (Picked Up, Delivered, etc.).
+3. **Real-time Tracking**
+   - Track live location of the delivery partner.
+   - Show delivery route on Google Maps.
+4. **Earnings & Payments**
+   - View completed deliveries and earnings breakdown.
+   - Payment withdrawal request option.
+5. **Notifications**
+   - Real-time push notifications for new orders and status updates.
+6. **Profile & Settings**
+   - Update profile details (name, vehicle type, etc.).
+   - Change availability status (Online/Offline).
+7. **Dark Mode Support**
+   - Implement theme switching based on system preference.
 
-### Android
+#### Nice to Have
 
-```sh
-# Using npm
-npm run android
+- **Ratings & Reviews**
+  - Allow customers to rate delivery partners.
+- **In-app Chat**
+  - Enable communication between customers and delivery partners.
+- **SOS Button**
+  - Emergency contact option for safety.
 
-# OR using Yarn
-yarn android
-```
+### Guidelines to Develop a Project
 
-### iOS
+#### Must Have
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+1. **Code Structure**
+   - Follow proper folder structure for maintainability.
+   - Separate API service calls in a dedicated file.
+2. **Performance Optimization**
+   - Optimize API calls and cache frequently used data.
+   - Use lazy loading for images.
+3. **Error Handling**
+   - Implement proper error handling and toast messages for API failures.
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+#### Nice to Have
 
-```sh
-bundle install
-```
+- Implement offline mode to store data temporarily when internet connectivity is lost.
+- Unit test key functionalities.
 
-Then, and every time you update your native dependencies, run:
+### Submission Instructions
 
-```sh
-bundle exec pod install
-```
+#### Must Have
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+- Provide source code via GitHub repository.
+- Include proper README documentation with setup instructions.
+- Ensure all API endpoints are functional.
 
-```sh
-# Using npm
-npm run ios
+#### Nice to Have
 
-# OR using Yarn
-yarn ios
-```
+- Submit a demo video showcasing app features.
+- Deploy a backend API on a cloud server (e.g., AWS, DigitalOcean).
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## Resources
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+### Design Files
 
-## Step 3: Modify your app
+- Figma design link (if available)
 
-Now that you have successfully run the app, let's make changes!
+### APIs
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+- **Authentication API**
+  - `POST /login`
+  - `POST /register`
+  - `GET /profile`
+- **Orders API**
+  - `GET /orders`
+  - `POST /order/accept`
+  - `POST /order/update-status`
+- **Payments API**
+  - `GET /earnings`
+  - `POST /withdraw`
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+### Third-Party Packages
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+- Axios (API calls)
+- React Navigation (for screen navigation)
+- Google Maps API (for location tracking)
+- Notifee (for push notifications)
+- AsyncStorage (for local storage)
 
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.

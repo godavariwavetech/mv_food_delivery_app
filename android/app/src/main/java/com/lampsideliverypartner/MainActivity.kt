@@ -1,4 +1,4 @@
-package com.lampsideliverypartner
+package com.freshozapcartdeliverypartner
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
