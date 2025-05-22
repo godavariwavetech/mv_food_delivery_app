@@ -41,7 +41,7 @@ export const getFCMToken = async () => {
       id: 'default1',
       name: 'Default Channel',
       importance: AndroidImportance.HIGH, // Ensures high priority notifications
-      sound: 'default', // You can add a custom sound here
+      sound: 'notification_sound', // You can add a custom sound here
       vibration: true,
     });
     console.log(">>>>>>>>>>>>>MESSAGECALLING",remoteMessage)

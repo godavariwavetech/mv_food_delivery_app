@@ -67,10 +67,12 @@ const LoginScreen = ({ navigation }) => {
     !errors.password;
 
   const handleLogin = async () => {
+    console.log("ENTERD INTo login")
     if (isButtonEnabled) {
       setLoading(true);
       try {
         const response = await ApiService.login(mobileNumber, password);
+        console.log("response>>>>>>>>>>>>>>>>>",response)
         if (response.status === 200 && response.data.length > 0) {
           console.log('Login Success:', response);
           login(response.data[0]);

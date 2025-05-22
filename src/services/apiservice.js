@@ -2,7 +2,9 @@ import axios from 'axios';
 import { Alert } from 'react-native';
 
 // Base API URL
-const API_BASE_URL = 'https://api.freshozapcart.com/delivery_boy'; // Replace with your actual API URL
+// const API_BASE_URL = 'https://api.freshozapcart.com/delivery_boy'; // Replace with your actual API URL
+
+const API_BASE_URL ='https://api.localdaddy.in/delivery_boy'
 
 // Create Axios instance
 const apiClient = axios.create({
@@ -153,6 +155,31 @@ const ApiService = {
   getContactUs: async () => {
     try {
       const response = await publicapiClient.post("/application_common_api",[]);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching contact us details:', error);
+      throw error;
+    }
+  },
+  getReportingHistory: async (deliveryboy_id) => {
+    try {
+      const response = await apiClient.post("/deliveryboypayments",{
+        "deliveryboy_id":deliveryboy_id,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching contact us details:', error);
+      throw error;
+    }
+  },
+
+  getReports: async (deliveryboy_id,fromdate,todate) => {
+    try {
+      const response = await apiClient.post("/deliveryboypaymentreports",{
+        "deliveryboy_id":deliveryboy_id,
+         "fromdate":`${fromdate}`,
+         "todate":`${todate}`
+      });
       return response.data;
     } catch (error) {
       console.error('Error fetching contact us details:', error);

@@ -1,15 +1,15 @@
 {
   "project_info": {
     "project_number": "243620587272",
-    "project_id": "freshozapcartdelivery",
-    "storage_bucket": "freshozapcartdelivery.firebasestorage.app"
+    "project_id": "localdaddyrider",
+    "storage_bucket": "localdaddyrider.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:243620587272:android:7b5af53b69bcbab246aebd",
         "android_client_info": {
-          "package_name": "com.freshozapcartdeliverypartner"
+          "package_name": "com.localdaddyrider"
         }
       },
       "oauth_client": [],
@@ -28,7 +28,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:243620587272:android:82f8afccb787e88446aebd",
         "android_client_info": {
-          "package_name": "freshozapcartdelivery.app"
+          "package_name": "com.localdaddyrider"
         }
       },
       "oauth_client": [],

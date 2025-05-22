@@ -36,13 +36,16 @@ const openGoogleMaps = location => {
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
+    return "Date not available";
+  }
   return new Intl.DateTimeFormat("en-US", {
-    month: "short",  // "Mar"
-    day: "2-digit",  // "21"
-    year: "numeric", // "2025"
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    hour12: true,  // Ensures 12-hour format
+    hour12: true,
   }).format(date);
 };
 
@@ -216,7 +219,7 @@ const OrderTrackingScreen = ({ route }) => {
         <View style={{ flexDirection: 'row', gap: 5 }}>
           <View style={{ flexDirection: 'column', gap: 4 }}>
             <Text style={styles.orderNumber}><Text style={{ color: "green", fontWeight: "bold" }}>OrderId: { } </Text>{orderDetails.order_id}</Text>
-            <Text style={styles.orderDate}> {formatDate(orderDetails.order_date)}</Text>
+            <Text style={styles.orderDate}> {formatDate(orderDetails?.order_date)}</Text>
           </View>
         </View>
         <View>
