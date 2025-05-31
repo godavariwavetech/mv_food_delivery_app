@@ -2,7 +2,6 @@ import axios from 'axios';
 import { Alert } from 'react-native';
 
 // Base API URL
-// const API_BASE_URL = 'https://api.freshozapcart.com/delivery_boy'; // Replace with your actual API URL
 
 const API_BASE_URL ='https://api.localdaddy.in/delivery_boy'
 

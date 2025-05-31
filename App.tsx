@@ -22,7 +22,8 @@ const App = () => {
               text: "Update Now",
               onPress: () => {
                 try {
-                  Linking.openURL("https://play.google.com/store/apps/details?id=com.freshozapcartdeliverypartner") // Open Play Store / App Store
+                  console.log('Play store link')
+                  // Linking.openURL("https://play.google.com/store/apps/details?id=com.freshozapcartdeliverypartner") // Open Play Store / App Store
                 } catch (error) {
                   console.log(error)
                 }

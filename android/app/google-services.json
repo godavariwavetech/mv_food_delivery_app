@@ -1,7 +1,7 @@
 {
   "project_info": {
     "project_number": "243620587272",
-    "project_id": "localdaddyrider",
+    "project_id": "riderlocaldaddy",
     "storage_bucket": "localdaddyrider.firebasestorage.app"
   },
   "client": [
@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:243620587272:android:7b5af53b69bcbab246aebd",
         "android_client_info": {
-          "package_name": "com.localdaddyrider"
+          "package_name": "com.riderlocaldaddy"
         }
       },
       "oauth_client": [],
@@ -28,7 +28,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:243620587272:android:82f8afccb787e88446aebd",
         "android_client_info": {
-          "package_name": "com.localdaddyrider"
+          "package_name": "com.riderlocaldaddy"
         }
       },
       "oauth_client": [],
