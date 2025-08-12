@@ -8,11 +8,15 @@ import {
   StyleSheet,
   Dimensions,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import ApiService from '../services/apiservice';
 import { Alert } from 'react-native';
 import { AuthContext } from "../context/AuthContext";
+import CustomAlert from '../components/CustomAlert';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -23,6 +27,11 @@ const LoginScreen = ({ navigation }) => {
   const [errors, setErrors] = useState({ mobileNumber: '', password: '' });
   const [touched, setTouched] = useState({ mobileNumber: false, password: false });
   const [loading, setLoading] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+
 
   const validatePhoneNumber = (number) => {
     const indianPhoneRegex = /^[6-9]\d{9}$/;
@@ -34,7 +43,7 @@ const LoginScreen = ({ navigation }) => {
 
   const validatePassword = (pass) => {
     if (!pass) return 'Password is required';
-    if (pass.length < 6) return 'Password must be at least 6 characters';
+    // if (pass.length < 6) return 'Password must be at least 6 characters';
     return '';
   };
 
@@ -62,23 +71,35 @@ const LoginScreen = ({ navigation }) => {
 
   const isButtonEnabled =
     mobileNumber.length === 10 &&
-    password.length >= 6 &&
+    password.length > 0 &&
     !errors.mobileNumber &&
     !errors.password;
 
   const handleLogin = async () => {
-    console.log("ENTERD INTo login")
     if (isButtonEnabled) {
       setLoading(true);
       try {
         const response = await ApiService.login(mobileNumber, password);
-        console.log("response>>>>>>>>>>>>>>>>>",response)
+        console.log(response, 'loginRes')
         if (response.status === 200 && response.data.length > 0) {
           console.log('Login Success:', response);
           login(response.data[0]);
           navigation.replace('MainApp');
-        } else {
-          Alert.alert("Error", "Invalid credentials");
+          // navigation.replace('Registration')
+        } else if (response.status === 300) {
+          // Alert.alert('please wait until verification complete ')
+          setAlertMessage('Please wait until verification is complete from Admin');
+          setAlertVisible(true);
+          setPassword('');
+          setMobileNumber('');
+        }
+        else {
+          // Alert.alert("Error", "Invalid credentials");
+          setAlertMessage('Invalid credentials');
+          setAlertVisible(true);
+          // setPassword('');
+          // setMobileNumber('');
+          // navigation.navigate('MainApp');
         }
       } catch (error) {
         console.error('Login Error:', error);
@@ -91,8 +112,9 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
       <Image
-        source={require('../assets/login.png')}
+        source={require('../assets/foodtrail_delivery.png')}
         style={styles.logo}
         resizeMode="contain"
       />
@@ -110,7 +132,7 @@ const LoginScreen = ({ navigation }) => {
         />
         {touched.mobileNumber && errors.mobileNumber ? <Text style={styles.errorText}>{errors.mobileNumber}</Text> : null}
 
-        <TextInput
+        {/* <TextInput
           style={[styles.input, errors.password && touched.password && styles.inputError]}
           placeholder="Password"
           placeholderTextColor="gray"
@@ -119,8 +141,43 @@ const LoginScreen = ({ navigation }) => {
           onChangeText={handlePasswordChange}
           onBlur={() => handleBlur('password')}
         />
-        {touched.password && errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
+        {touched.password && errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null} */}
+
+
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={[
+              styles.input2,
+              { flex: 1 },
+              errors.password && touched.password && styles.inputError
+            ]}
+            placeholder="Password"
+            placeholderTextColor="gray"
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={handlePasswordChange}
+            onBlur={() => handleBlur('password')}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Icon
+              name={showPassword ? 'eye-off' : 'eye'}
+              size={24}
+              color="gray"
+              style={{ paddingHorizontal: 8 }}
+            />
+          </TouchableOpacity>
+        </View>
+        {touched.password && errors.password ? (
+          <Text style={styles.errorText}>{errors.password}</Text>
+        ) : null}
       </View>
+
+      <TouchableOpacity
+        style={styles.forgotPasswordContainer}
+        onPress={() => navigation.navigate("ForgotPassword")}
+      >
+        <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity
         style={[styles.loginButton, !isButtonEnabled && styles.disabledButton]}
@@ -133,6 +190,19 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.loginText}>Log In</Text>
         )}
       </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
+        <Text style={{ color: 'green', marginTop: verticalScale(20) }}>
+          Don't have an account? Register
+        </Text>
+      </TouchableOpacity>
+
+      <CustomAlert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={() => setAlertVisible(false)}
+      />
+
     </View>
   );
 };
@@ -156,19 +226,37 @@ const styles = StyleSheet.create({
   },
   input: {
     height: verticalScale(45),
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: moderateScale(10),
+    padding: moderateScale(10),
+    backgroundColor: '#f5f5f5',
     marginBottom: verticalScale(10),
     fontSize: scale(14),
     color: '#000',
   },
+  input2: {
+    // height: verticalScale(45),
+    // borderWidth: 1,
+    // borderColor: '#e0e0e0',
+    // borderRadius: moderateScale(10),
+    // padding: moderateScale(10),
+    backgroundColor: '#f5f5f5',
+    // marginBottom: verticalScale(10),
+    fontSize: scale(14),
+    color: '#000',
+  },
   inputError: {
-    borderBottomColor: 'red',
+    borderColor: 'red',
+    backgroundColor: '#fff0f0',
   },
   errorText: {
     color: 'red',
     fontSize: scale(12),
-    marginBottom: verticalScale(10),
+    marginBottom: verticalScale(5),
+    padding: moderateScale(5),
+    borderRadius: moderateScale(5),
+    // backgroundColor: '#ffebee',
   },
   loginButton: {
     width: '100%',
@@ -176,7 +264,6 @@ const styles = StyleSheet.create({
     paddingVertical: verticalScale(12),
     borderRadius: moderateScale(10),
     alignItems: 'center',
-    marginTop: verticalScale(10),
   },
   disabledButton: {
     backgroundColor: '#ccc',
@@ -186,6 +273,29 @@ const styles = StyleSheet.create({
     fontSize: scale(16),
     fontWeight: 'bold',
   },
+
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: moderateScale(10),
+    paddingHorizontal: moderateScale(10),
+    backgroundColor: '#f5f5f5',
+    marginBottom: verticalScale(10),
+    height: verticalScale(45),
+  },
+
+  forgotPasswordContainer: {
+    width: '100%',
+    alignItems: 'flex-end',
+    marginBottom: verticalScale(15),
+  },
+  forgotPasswordText: {
+    color: 'green',
+    fontSize: scale(12),
+  },
+
 });
 
 export default LoginScreen;

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { launchImageLibrary } from "react-native-image-picker";
@@ -23,12 +23,15 @@ const EditProfileScreen = () => {
   const [address, setAddress] = useState(profile?.address || "");
   const [phoneError, setPhoneError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [loader, setLoader] = useState(false);
 
   // Function to pick image from gallery
   const pickImage = () => {
     launchImageLibrary({ mediaType: "photo", includeBase64: true }, (response) => {
       if (!response.didCancel && !response.error && response.assets) {
-        setImage(response.assets[0].base64);
+        //setImage(response.assets[0].base64);
+        const base64Image = `data:image/jpeg;base64,${response.assets[0].base64}`;
+        setImage(base64Image);
       }
     });
   };
@@ -68,16 +71,21 @@ const EditProfileScreen = () => {
     if (!validateInputs()) return; // Stop if validation fails
 
     try {
+      setLoader(true);
       const formData = {
         id: user?.id,   // Delivery Boy ID
         name,
         mobilenumber: phone,
         password,
         address,
-        avatar: image ? `data:image/jpeg;base64,${image}` : "",  // Optional image
+        // avatar: image ? `data:image/jpeg;base64,${image}` : "",  // Optional image
+        avatar: image || ''
       };
+      console.log(formData, 'formData')
 
       const response = await ApiService.updateProfileData(formData);
+      console.log(response, 'edit response>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+
 
       if (response.status === 200) {
         Alert.alert("Success", "Profile updated successfully!");
@@ -89,6 +97,8 @@ const EditProfileScreen = () => {
     } catch (error) {
       console.error("Update Profile Error:", error);
       Alert.alert("Error", "Something went wrong. Please try again.");
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -104,7 +114,10 @@ const EditProfileScreen = () => {
       <View style={styles.container}>
         {/* Profile Image Section */}
         <View style={styles.imageContainer}>
-          <Image source={image ? { uri: image } : require("../assets/person.png")} style={styles.profileImage} />
+          <TouchableOpacity>
+
+          </TouchableOpacity>
+          <Image source={image ? { uri: image } : require("../assets/personPlaceholder.jpg")} style={styles.profileImage} />
           <TouchableOpacity style={styles.cameraIcon} onPress={pickImage}>
             <MaterialIcons name="photo-camera" size={hp("2.5%")} color="#fff" />
           </TouchableOpacity>
@@ -148,8 +161,12 @@ const EditProfileScreen = () => {
         </View>
 
         {/* Update Profile Button */}
-        <TouchableOpacity style={[{ position: "absolute", bottom: hp("3%") }, commonstyles.button]} onPress={handleUpdateProfile}>
-          <Text style={commonstyles.buttontext}>Update Profile</Text>
+        <TouchableOpacity style={[{ position: "absolute", bottom: hp("3%") }, commonstyles.button, { backgroundColor: "green" }]} onPress={handleUpdateProfile}>
+          {
+            loader ? <ActivityIndicator size="small" color="#fff" /> : (
+              <Text style={commonstyles.buttontext}>Update Profile</Text>
+            )
+          }
         </TouchableOpacity>
       </View>
     </>

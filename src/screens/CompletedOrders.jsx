@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TouchableOpacity, FlatList, Image, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { View, Text, TouchableOpacity, FlatList, Image, StyleSheet, TextInput, ActivityIndicator,Alert,Linking,PermissionsAndroid } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -8,6 +8,9 @@ import Separator from '../components/Separator';
 import { AuthContext } from "../context/AuthContext";
 import ApiService from '../services/apiservice';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useFocusEffect } from '@react-navigation/native';
+// import Geolocation from '@react-native-community/geolocation';
+
 
 const DatePickerField = ({ label, value, onChange }) => {
   const [showPicker, setShowPicker] = useState(false);
@@ -60,6 +63,8 @@ const getPaymentIcon = (type) => {
       return 'cash';
     case 'net banking':
       return 'bank-outline';
+      case 'pay online':
+      return 'cellphone';
     default:
       return 'help-circle-outline'; // Default unknown icon
   }
@@ -71,6 +76,8 @@ const CompletedOrdersScreen = ({ navigation }) => {
   const [toDate, setToDate] = useState(new Date().toLocaleDateString("en-GB").split("/").join("-")); // Default to current date
   const [completedOrders, setCompletedOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [driverLocation, setDriverLocation] = useState({ latitude: null, longitude: null });
+  
 
   const fetchCompletedOrders = async () => {
     setLoading(true);
@@ -83,6 +90,7 @@ const CompletedOrdersScreen = ({ navigation }) => {
     const endDate = formatDate(toDate);
 
     try {
+      console.log({f_date: startDate, t_date: endDate, emp_id: user.id})
       const response = await ApiService.completedorders({ f_date: startDate, t_date: endDate, emp_id: user.id });
       if (response.status === 200) {
         console.log("7777", response.data)
@@ -94,6 +102,118 @@ const CompletedOrdersScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
+
+     const requestPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location Access Required',
+            message: 'This app needs your location.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          }
+        );
+        console.log('Permission result:', granted);
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn('Permission error:', err);
+        return false;
+      }
+    }
+    return true; // iOS assumes permission if declared in Info.plist
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      let intervalId = null;
+
+      const getLocation = async () => {
+        const hasPermission = await requestPermission();
+        console.log('Permission granted:', hasPermission);
+        if (!hasPermission) {
+          Alert.alert(
+            'Location Permission Denied',
+            'To show tours near you, we need your location. Please enable location permission in your settings.',
+            [
+              { text: 'Open Settings', onPress: () => Linking.openSettings() },
+              { text: 'Cancel', style: 'cancel' },
+            ]
+          );
+          return false;
+        }
+        return true;
+      };
+
+      // const fetchLocation = () => {
+      //   Geolocation.getCurrentPosition(
+      //     (position) => {
+      //       const { latitude, longitude } = position.coords;
+      //       console.log('📍 Location Update (1 min) - Latitude:', latitude, 'Longitude:', longitude);
+      //       setDriverLocation({ latitude, longitude }); // Update state with latest location
+      //       // const payload={
+      //       //   user_id:user?.id,
+      //       //   latitude:latitude,
+      //       //   longitude:longitude,
+      //       //   locationId:deliveryBoylocationId
+      //       // }
+      //       // console.log(payload,'payload');
+      //       // Optionally send to backend
+      //       // ApiService.postDeliveryBoyLocation(user?.id, { latitude, longitude},deliveryBoylocationId);
+      //     },
+      //     (error) => {
+      //       console.log('❌ Error getting location:', error.code, error.message);
+      //       let message = 'Unable to fetch location. Please try again.';
+      //       if (error.code === 1) {
+      //         message = 'Location permission denied. Please enable it in settings.';
+      //       } else if (error.code === 2) {
+      //         message = 'Location services are unavailable. Please enable them.';
+      //       } else if (error.code === 3) {
+      //         message = 'Location request timed out. Please try again.';
+      //       }
+      //       Alert.alert('Location Error', message, [
+      //         { text: 'Open Settings', onPress: () => Linking.openSettings() },
+      //         { text: 'Cancel', style: 'cancel' },
+      //       ]);
+      //     },
+      //     {
+      //       enableHighAccuracy: false, // Set to true if higher accuracy is needed
+      //       timeout: 20000,
+      //       maximumAge: 30000,
+      //     }
+      //   );
+      // };
+
+      const startLocationTracking = async () => {
+        //  if (toggle !== 1) return; // Only track location when online
+
+        // if (toggle === 1) {
+          const permissionGranted = await getLocation();
+          if (!permissionGranted) return;
+
+          // Fetch location immediately
+          // fetchLocation();
+
+          // Set interval to fetch location every 10 seconds
+          intervalId = setInterval(() => {
+            // fetchLocation();
+          }, 10000);
+        // }
+      };
+
+      startLocationTracking();
+
+      // Cleanup on screen blur or component unmount
+      return () => {
+        if (intervalId !== null) {
+          clearInterval(intervalId);
+          console.log('🛑 Cleared interval');
+        }
+      };
+    }, [ user])
+  );
 
   useEffect(() => {
     fetchCompletedOrders();
@@ -124,7 +244,8 @@ const CompletedOrdersScreen = ({ navigation }) => {
         ) : (
           <FlatList
             data={completedOrders}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item,index) => index.toString()}
+            showsVerticalScrollIndicator={false}
             renderItem={({ item }) => {
               // Parse the delivery_boy_array to extract delivery person details
               let deliveryBoy = [];
@@ -140,6 +261,8 @@ const CompletedOrdersScreen = ({ navigation }) => {
                     orderDetails: item,
                     // handleAccept,
                     // handleComplete,
+                    driverLocation:driverLocation,
+                    status:'afterComplete'  // this is for only to convert the dateformat
                   })
                 }>
                   <View style={styles.rowBetween}>
@@ -154,12 +277,12 @@ const CompletedOrdersScreen = ({ navigation }) => {
                           />
                           {item.payment_type}
                         </Text>
-                        <Text style={styles.time}>Items: {item.item_count}</Text>
+                        <Text style={styles.time}>Items: {item?.item_count}</Text>
                       </View>
                     </View>
                     <View style={styles.priceContainer}>
-                      <Text style={styles.status}>Order ID: {item.order_id}</Text>
-                      <Text style={styles.price}>₹{item.total_amount}</Text>
+                      <Text style={[styles.status,{color:'#000',fontWeight:'400'}]}>Order ID: {item.order_ids}</Text>
+                      <Text style={styles.price}>₹{item?.total_amount}</Text>
                     </View>
                   </View>
 

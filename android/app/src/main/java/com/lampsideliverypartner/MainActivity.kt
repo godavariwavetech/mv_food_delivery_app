@@ -1,4 +1,4 @@
-package com.riderlocaldaddy
+package com.riderlocaldaddy.app
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

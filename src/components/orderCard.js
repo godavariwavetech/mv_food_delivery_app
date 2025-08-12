@@ -8,31 +8,28 @@ import Separator from './Separator';
 
 const OrderCard = ({ order }) => {
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",  // "Mar"
-      day: "2-digit",  // "21"
-      year: "numeric", // "2025"
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,  // Ensures 12-hour format
-    }).format(date);
-  };
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",   
+    year: "numeric", 
+  }).format(date);
+};
   return (
     <View style={styles.card}>
       {/* Order Header - Category & Time */}
       <View style={{ flexDirection: "column" }}>
         <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ marginBottom: 5 }}># { } {order.order_id}</Text>
+          <Text style={{ marginBottom: 5 }}># { } {order.order_ids}</Text>
           <View style={{flexDirection: "row"}}>
-            <MaterialIcons name="currency-rupee" size={18} color="#555" />
-            <Text style={{ marginBottom: 5 }}>{order.grand_total}</Text>
+            {/* <MaterialIcons name="currency-rupee" size={18} color="#555" /> */}
+            <Text style={{ marginBottom: 5 }}>&#8377;{order.grand_total}</Text>
           </View>
         </View>
         <View style={styles.timeContainer}>
           <Ionicons name="time-outline" size={16} color="#555" />
-          <Text style={styles.timeText}>{formatDate(order.order_date)}</Text>
+          <Text style={styles.timeText}>{formatDate(order?.order_date)} {order?.order_time}</Text>
         </View>
       </View>
       <Separator />

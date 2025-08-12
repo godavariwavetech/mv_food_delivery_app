@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   searchButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: 'green',
     paddingVertical: 12,
     alignItems: 'center',
     borderRadius: 5,

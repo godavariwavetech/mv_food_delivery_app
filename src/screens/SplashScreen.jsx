@@ -7,7 +7,7 @@ const SplashScreen = () => {
     <View style={styles.container}>
       {/* Logo Animation */}
       <Animated.View entering={FadeIn.duration(1500)}>
-        <Image source={require("../assets/splash2.png")} style={styles.logo} />
+        <Image source={require("../assets/foodtrail_delivery.png")} style={styles.logo} />
       </Animated.View>
 
       {/* App Name */}
@@ -28,12 +28,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#2E7D32", // Green shade (Adjust as needed)
+    backgroundColor: "#fff", // Green shade (Adjust as needed)
   },
   logo: {
-    width: 120,
-    height: 120,
-    resizeMode: "contain",
+    width: 250,
+    height: 250,
+    resizeMode: "stretch",
     borderRadius: 10
   },
   appName: {

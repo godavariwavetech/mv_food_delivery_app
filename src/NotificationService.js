@@ -33,23 +33,22 @@ export const requestNotificationPermission = async () => {
 };
 
 export const getFCMToken = async () => {
-  console.log(">>>>>>>>>>>>>>>")
+  await notifee.createChannel({
+    id: 'custom-sound-channel',
+    name: 'Default Channel',
+    importance: AndroidImportance.HIGH, // Ensures high priority notifications
+    sound: 'custom_sound',// You can add a custom sound here
+    vibration: true,
+  });
   const token = await messaging().getToken();
   console.log(token)
   messaging().onMessage(async (remoteMessage) => {
-    await notifee.createChannel({
-      id: 'default1',
-      name: 'Default Channel',
-      importance: AndroidImportance.HIGH, // Ensures high priority notifications
-      sound: 'notification_sound', // You can add a custom sound here
-      vibration: true,
-    });
-    console.log(">>>>>>>>>>>>>MESSAGECALLING",remoteMessage)
+
     await notifee.displayNotification({
       title: remoteMessage.notification.title,
       body: remoteMessage.notification.body,
       android: {
-        channelId: "default1",
+        channelId: 'custom-sound-channel',
         importance: AndroidImportance.HIGH,
       },
     });
@@ -57,3 +56,30 @@ export const getFCMToken = async () => {
 
  return token
 };
+
+export const getTokenValue = async () => {
+  const token = await messaging().getToken();
+  return token;
+}
+
+// export async function displayLocalNotification() {
+//   // Create or get the channel with the custom sound
+//   const channelId = await notifee.createChannel({
+//     id: 'orders',
+//     name: 'Order Notifications',
+//     sound: 'notification_sound',// No file extension!
+//     importance: AndroidImportance.HIGH,
+//   });
+
+//   // Display the notification
+//   await notifee.displayNotification({
+//     title: '🔔 Test Notification',
+//     body: 'This is how your custom sound will play!',
+//     android: {
+//       channelId,
+//       pressAction: {
+//         id: 'default',
+//       },
+//     },
+//   });
+// }

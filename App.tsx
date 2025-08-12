@@ -1,5 +1,5 @@
-import { Linking, Alert, SafeAreaView } from 'react-native';
-import React, { useEffect } from 'react';
+import { Linking, Alert, SafeAreaView, AppState } from 'react-native';
+import React, { useEffect, useRef } from 'react';
 import AppNavigator from './src/navigation/AppNavigator';
 import { useColorScheme } from 'react-native';
 import VersionCheck from 'react-native-version-check';
@@ -8,6 +8,7 @@ import { AuthProvider } from './src/context/AuthContext';
 
 const App = () => {
   const theme = useColorScheme();
+  const appState = useRef(AppState.currentState);
 
   // Function to check for updates
   const checkForUpdate = async () => {
@@ -22,8 +23,7 @@ const App = () => {
               text: "Update Now",
               onPress: () => {
                 try {
-                  console.log('Play store link')
-                  // Linking.openURL("https://play.google.com/store/apps/details?id=com.freshozapcartdeliverypartner") // Open Play Store / App Store
+                  Linking.openURL(res.storeUrl);
                 } catch (error) {
                   console.log(error)
                 }
@@ -48,6 +48,21 @@ const App = () => {
     };
 
     handleNotificationRequest();
+  }, []);
+
+      useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        checkForUpdate();
+      }
+      appState.current = nextAppState;
+    });
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   return (

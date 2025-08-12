@@ -29,6 +29,7 @@ const ContactUsScreen = () => {
       setRefreshing(true);
       setError(false); // Reset error on retry
       const response = await ApiService.getContactUs();
+      console.log(response,'contacts')
       if (response.status === 200) {
         console.log(response.data[0])
         setContactInfo(response.data[0])
@@ -47,7 +48,7 @@ const ContactUsScreen = () => {
 
   const handleWhatsAppPress = () => {
     if (!contactInfo?.contact_number) return Alert.alert('Error', 'No WhatsApp number available.');
-    const whatsappUrl = `https://wa.me/${contactInfo.contact_number}`;
+    const whatsappUrl = `https://wa.me/91${contactInfo.contact_number}`;
     Linking.openURL(whatsappUrl).catch(() => {
       Alert.alert('Error', 'Could not open WhatsApp.');
     });

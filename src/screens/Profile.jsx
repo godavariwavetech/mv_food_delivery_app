@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Modal,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { scale, verticalScale, moderateScale } from "react-native-size-matters";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
@@ -20,6 +21,7 @@ import { AuthContext } from "../context/AuthContext";
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const [isEditing, setIsEditing] = useState(false);
+  const [loader,setLoader] = useState(false);
   const [profile, setProfile] = useState({
     name: "",
     phone: "",
@@ -35,8 +37,9 @@ const ProfileScreen = () => {
 
   const fetchProfileData = async () => {
     try {
+      setLoader(true)
       const response = await ApiService.getProfileData(user);
-      console.log(response)
+      console.log(response,'profile')
       console.log(response?.status === 200 , response.data.data.length > 0)
       if (response?.status === 200 && response.data.data.length > 0) {
         
@@ -54,6 +57,8 @@ const ProfileScreen = () => {
       }
     } catch (error) {
       Alert.alert("Error", error.message || "Something went wrong.");
+    } finally {
+      setLoader(false)
     }
   };
 
@@ -71,6 +76,14 @@ const ProfileScreen = () => {
     navigation.navigate("Login");
   };
 
+  if(loader){
+    return(
+      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+        <ActivityIndicator size={'large'} color={'green'} />
+      </View>
+    )
+  }
+
   return (
     <>
       <View style={styles.header}>
@@ -84,7 +97,7 @@ const ProfileScreen = () => {
         {/* Profile Picture */}
         <View style={styles.avatarContainer}>
           <Image
-            source={profile.avatar ? { uri: profile.avatar } : require("../assets/person.png")}
+            source={profile.avatar ? { uri: profile.avatar } : require("../assets/personPlaceholder.jpg")}
             style={styles.avatar}
           />
           <TouchableOpacity onPress={handleEdit} style={styles.editIcon}>
@@ -152,7 +165,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    // justifyContent: "center",
     padding: scale(20),
   },
   header: {
@@ -172,7 +185,8 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     position: "relative",
-    marginBottom: verticalScale(20),
+    marginBottom: verticalScale(50),
+    // marginBottom: 50
   },
   avatar: {
     width: scale(120),

@@ -1,4 +1,4 @@
-package com.riderlocaldaddy
+package com.riderlocaldaddy.app
 
 import android.app.Application
 import com.facebook.react.PackageList

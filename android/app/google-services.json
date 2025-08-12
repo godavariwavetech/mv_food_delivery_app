@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "243620587272",
-    "project_id": "riderlocaldaddy",
-    "storage_bucket": "localdaddyrider.firebasestorage.app"
+    "project_number": "776105079286",
+    "project_id": "local-daddy",
+    "storage_bucket": "local-daddy.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:243620587272:android:7b5af53b69bcbab246aebd",
+        "mobilesdk_app_id": "1:776105079286:android:30462e30c01b3cc2c297d7",
         "android_client_info": {
-          "package_name": "com.riderlocaldaddy"
+          "package_name": "com.localdaddy"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBFNgzj1LsthvKhdnTG8C7MP-nDOSdnHYE"
+          "current_key": "AIzaSyCmPi8xOUznymz9c6NGGswXgmxumswoQy0"
         }
       ],
       "services": {
@@ -26,15 +26,34 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:243620587272:android:82f8afccb787e88446aebd",
+        "mobilesdk_app_id": "1:776105079286:android:36f245f142764f57c297d7",
         "android_client_info": {
-          "package_name": "com.riderlocaldaddy"
+          "package_name": "com.riderlocaldaddy.app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBFNgzj1LsthvKhdnTG8C7MP-nDOSdnHYE"
+          "current_key": "AIzaSyCmPi8xOUznymz9c6NGGswXgmxumswoQy0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776105079286:android:6df15e6916f2e0eac297d7",
+        "android_client_info": {
+          "package_name": "localdaddyvendor.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmPi8xOUznymz9c6NGGswXgmxumswoQy0"
         }
       ],
       "services": {
