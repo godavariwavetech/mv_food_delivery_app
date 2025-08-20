@@ -30,11 +30,11 @@ const handleApiError = error => {
     console.error('API Error:', error.response.data);
     return error.response.data;
   } else if (error.request) {
-    console.error('Network Error:', error.request);
-    Alert.alert(
-      'No Internet',
-      'Please check your internet connection and try again.',
-    );
+    // console.error('Network Error:', error.request);
+    // Alert.alert(
+    //   'No Internet',
+    //   'Please check your internet connection and try again.',
+    // );
     return {message: 'Network error, please try again later.'};
   } else {
     console.error('Unexpected Error:', error.message);
@@ -107,6 +107,7 @@ const ApiService = {
   registration: async payload => {
     try {
       const resp = await apiClient.post('/adddeliveryboy', payload);
+      console.log(resp,"+++++++++++++++++DELEVERRERERERERERER")
       return resp.data;
     } catch (error) {
       throw handleApiError(error);
