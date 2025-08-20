@@ -71,7 +71,7 @@ const ReportsScreen = () => {
   const renderReportItem = ({ item }) => (
     <View style={styles.reportCard}>
       <View style={styles.reportHeader}>
-        <MaterialCommunityIcons name="calendar-range" size={20} color="green" />
+        <MaterialCommunityIcons name="calendar-range" size={20} color="#faa819" />
         <View style={{ flex: 1 }}>
           <Text style={styles.paymentDate}>
             {formatDate(item.payment_dates.split(' - ')[0])} - {formatDate(item.payment_dates.split(' - ')[1])}
@@ -81,7 +81,7 @@ const ReportsScreen = () => {
           </Text>
         </View>
         {/* <View style={[styles.statusIndicator, 
-          { backgroundColor: item.d_in === 0 ? '#FFA726' : 'green' }]}>
+          { backgroundColor: item.d_in === 0 ? '#FFA726' : '#faa819' }]}>
           <Text style={styles.statusText}>
             {item.d_in === 0 ? 'Pending' : 'Completed'}
           </Text>
@@ -135,8 +135,8 @@ const ReportsScreen = () => {
             <Text style={[styles.detailValue, { fontSize: 16 }]}>₹{item.total_amount}</Text>
           </View>
           <View style={styles.detailRow}>
-            <Text style={[styles.detailLabel, { color: 'green' }]}>Net Payment</Text>
-            <Text style={[styles.detailValue, { color: 'green', fontWeight: '700' }]}>
+            <Text style={[styles.detailLabel, { color: '#faa819' }]}>Net Payment</Text>
+            <Text style={[styles.detailValue, { color: '#faa819', fontWeight: '700' }]}>
               ₹{item.total_payment_amount}
             </Text>
           </View>
@@ -221,7 +221,7 @@ const ReportsScreen = () => {
 
       {loading ? (
         <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color="green" />
+          <ActivityIndicator size="large" color="#faa819" />
         </View>
       ) : error ? (
         <View style={styles.errorContainer}>
@@ -243,8 +243,8 @@ const ReportsScreen = () => {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={handleRefresh}
-              colors={['green']}
-              tintColor="green"
+              colors={['#faa819']}
+              tintColor="#faa819"
             />
           }
           ListEmptyComponent={
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#f0f0f0',
   },
   viewButtonText: {
-    color: 'green',
+    color: '#faa819',
     fontSize: 14,
     fontWeight: '500',
     marginRight: 4,
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: 'green',
+    backgroundColor: '#faa819',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'green',
+    backgroundColor: '#faa819',
     padding: 15,
     marginBottom: 10,
   },
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   filterButton: {
-    backgroundColor: 'green',
+    backgroundColor: '#faa819',
     borderRadius: 8,
     padding: 12,
     marginTop: 12,
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f0f0f0',
   },
   sectionTitle: {
-    color: 'green',
+    color: '#faa819',
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 8,
@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   orderId: {
-    backgroundColor: 'green',
+    backgroundColor: '#faa819',
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 4,

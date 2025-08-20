@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   },
   otpBox: {
     borderWidth: 1,
-    borderColor: "green",
+    borderColor: "#faa819",
     borderRadius: 10,
     width: width * 0.14,
     height: height * 0.07,
@@ -147,11 +147,11 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   resendLink: {
-    color: "green",
+    color: "#faa819",
     fontWeight: 600,
   },
   verifyButton: {
-    backgroundColor: "green",
+    backgroundColor: "#faa819",
     width: "100%",
     paddingVertical: height * 0.018,
     borderRadius: 50,

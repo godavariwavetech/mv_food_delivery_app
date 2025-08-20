@@ -3,7 +3,7 @@ import {Alert} from 'react-native';
 
 // Base API URL
 
-const API_BASE_URL ='https://localdaddy.in:2266/delivery_boy'
+const API_BASE_URL ='https://melocalapp.com:2630/delivery_boy'
 
 // Create Axios instance
 const apiClient = axios.create({
@@ -16,7 +16,7 @@ const apiClient = axios.create({
 
 // Create Axios instance
 const publicapiClient = axios.create({
-  baseURL: 'https://localdaddy.in:2266/public_app',
+  baseURL: 'https://melocalapp.com:2630/public_app',
   timeout: 10000, // 10 seconds timeout
   headers: {
     'Content-Type': 'application/json',
@@ -47,6 +47,7 @@ const ApiService = {
   // 🔹 User Login
   login: async (number, password) => {
     try {
+      console.log({number, password},"++++++++++++++{number, password}")
       const response = await apiClient.post('/logincheck', {number, password});
       return response.data;
     } catch (error) {
@@ -66,6 +67,7 @@ const ApiService = {
   },
   getOrderDetails: async id => {
     try {
+      console.log(id,"+++++>>>IDDDD")
       const response = await apiClient.post('/getorderdetails', {order_id: id});
       return response.data;
     } catch (error) {

@@ -113,7 +113,8 @@ const OrderTrackingScreen = ({route}) => {
 
   const fetchOrders = async () => {
     try {
-      const response = await ApiService.getOrderDetails(orderDetails.order_id);
+      const response = await ApiService.getOrderDetails(orderDetails.id);
+      console.log(response,"++++++++++++++++++Responsseeeeee")
       if (response?.status === 200) {
         console.log('orderdetails', response.data);
         setOrderItems(response.data);
@@ -306,6 +307,8 @@ const OrderTrackingScreen = ({route}) => {
   console.log(
     orderDetails,
     '+++++++++++++++orderItems?.orderdata[0].payment_type',
+    orderStatus,
+    orderItems
   );
 
   return (
@@ -328,7 +331,7 @@ const OrderTrackingScreen = ({route}) => {
           <View style={{flexDirection: 'row', gap: 5}}>
             <View style={{flexDirection: 'column', gap: 4}}>
               <Text style={styles.orderNumber}>
-                <Text style={{color: 'green', fontWeight: 'bold'}}>
+                <Text style={{color: '#faa819', fontWeight: 'bold'}}>
                   OrderId: {}{' '}
                 </Text>
                 {orderDetails.order_ids}
@@ -371,7 +374,7 @@ const OrderTrackingScreen = ({route}) => {
             {/* Amount shows only when payment type is COD  and  status==2*/}
             {orderDetails?.payment_type === 'COD' &&
               // orderStatus == 'Cash on Delivery' &&
-              orderStatus === 2 && (
+             ( orderStatus === 2 || orderStatus ===3 )&& (
                 <View
                   style={{flexDirection: 'row', gap: 3, alignItems: 'center'}}>
                   <Text style={styles.paymentText}>Grand Total:</Text>
@@ -401,7 +404,7 @@ const OrderTrackingScreen = ({route}) => {
                 }>
                 <View
                   style={{flexDirection: 'row', gap: 3, alignItems: 'center'}}>
-                  <Icon name="location-outline" size={18} color="green" />
+                  <Icon name="location-outline" size={18} color="#faa819" />
                   <Text style={styles.restaurantName}>
                     {orderDetails?.shop_name}
                   </Text>
@@ -409,7 +412,7 @@ const OrderTrackingScreen = ({route}) => {
               </TouchableOpacity>
               <View
                 style={{flexDirection: 'row', gap: 3, alignItems: 'center'}}>
-                <Icon name="call-outline" size={20} color="green" />
+                <Icon name="call-outline" size={20} color="#faa819" />
                 <TouchableOpacity
                   onPress={() =>
                     Linking.openURL(
@@ -437,13 +440,13 @@ const OrderTrackingScreen = ({route}) => {
               }>
               <View
                 style={{flexDirection: 'row', gap: 3, alignItems: 'center'}}>
-                <FontAwesome name="location-arrow" size={18} color="green" />
+                <FontAwesome name="location-arrow" size={18} color="#faa819" />
                 <Text style={styles.address}>
                   {orderDetails?.delivery_address}
                 </Text>
               </View>
               <View style={styles.mapIndication}>
-                <FontAwesome name="map-marker" size={14} color="green" />
+                <FontAwesome name="map-marker" size={14} color="#faa819" />
                 <Text style={styles.mapIndicationText}>
                   Tap to open in Google Maps
                 </Text>
@@ -452,13 +455,13 @@ const OrderTrackingScreen = ({route}) => {
           </View>
         ) : null}
 
-        {orderStatus === 3 || isCompleted || orderStatus === 2 ? (
+        {orderStatus === 3  || orderStatus === 2 ? (
           <View style={styles.sectionContainer}>
             <View style={styles.headerContainer}>
               <Icon
                 name="person"
                 size={22}
-                color="green"
+                color="#faa819"
                 style={styles.icon}
               />
               <Text style={styles.sectionHeader}>Customer Details</Text>
@@ -491,7 +494,7 @@ const OrderTrackingScreen = ({route}) => {
                   📍 {orderDetails?.delivery_address}
                 </Text>
                 <View style={styles.mapIndication}>
-                  <FontAwesome name="map-marker" size={14} color="green" />
+                  <FontAwesome name="map-marker" size={14} color="#faa819" />
                   <Text style={styles.mapIndicationText}>
                     Tap to open in Google Maps
                   </Text>
@@ -502,7 +505,7 @@ const OrderTrackingScreen = ({route}) => {
         ) : null}
         {/* 
  <View style={styles.mapIndication}>
-  <FontAwesome name="map-marker" size={14} color="green" />
+  <FontAwesome name="map-marker" size={14} color="#faa819" />
   <Text style={styles.mapIndicationText}>Tap to open in Google Maps</Text>
 </View> */}
 
@@ -511,7 +514,7 @@ const OrderTrackingScreen = ({route}) => {
             <Icon
               name="checkmark-circle"
               size={24}
-              color="green" // Always green
+              color="#faa819" // Always #faa819
             />
             <Text style={styles.t1}>New Order</Text>
           </View>
@@ -525,7 +528,7 @@ const OrderTrackingScreen = ({route}) => {
                 orderStatus === 3 ||
                 isCompleted ||
                 orderStatus === 2
-                  ? 'green'
+                  ? '#faa819'
                   : 'gray'
               }
             />
@@ -536,7 +539,7 @@ const OrderTrackingScreen = ({route}) => {
             <Icon
               name="location"
               size={24}
-              color={orderStatus === 3 || isCompleted ? 'green' : 'gray'}
+              color={orderStatus === 3 || isCompleted ? '#faa819' : 'gray'}
             />
             <Text style={styles.t1}>Delivered</Text>
           </View>
@@ -592,7 +595,7 @@ const OrderTrackingScreen = ({route}) => {
         {/* {orderStatus === 3 || isCompleted || orderStatus === 2  ? (
         <View style={styles.sectionContainer}>
           <View style={styles.headerContainer}>
-            <Icon name="person" size={22} color="green" style={styles.icon} />
+            <Icon name="person" size={22} color="#faa819" style={styles.icon} />
             <Text style={styles.sectionHeader}>Customer Details</Text>
           </View>
           {orderDetails?.customer_name && (
@@ -616,7 +619,7 @@ const OrderTrackingScreen = ({route}) => {
         {/* {orderStatus === 8 || orderStatus === 3 || isCompleted || orderStatus === 2  ? (
         <View style={styles.sectionContainer}>
           <View style={styles.headerContainer}>
-            <MeterialIcon name="store" size={22} color="green" style={styles.icon} />
+            <MeterialIcon name="store" size={22} color="#faa819" style={styles.icon} />
             <Text style={styles.sectionHeader}>Franchise Details</Text>
           </View>
           {orderItems?.orderdata[0]?.franchise_name && (
@@ -684,7 +687,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'green',
+    backgroundColor: '#faa819',
     padding: hp(2),
     paddingTop: hp(8),
   },
@@ -703,7 +706,7 @@ const styles = StyleSheet.create({
   orderNumber: {fontSize: hp(2.2), fontWeight: '400', color: '#000'},
   orderDate: {color: 'gray', marginTop: 4},
   newOrder: {
-    color: 'green',
+    color: '#faa819',
     fontWeight: 'bold',
     marginTop: 4,
     alignSelf: 'flex-start',
@@ -745,7 +748,7 @@ const styles = StyleSheet.create({
     color: '#000',
     width: '60%',
   },
-  phone: {color: 'green', marginTop: 4},
+  phone: {color: '#faa819', marginTop: 4},
   address: {marginTop: 4, color: 'black'},
   trackingSection: {
     flexDirection: 'row',
@@ -856,7 +859,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   okButton: {
-    backgroundColor: 'green',
+    backgroundColor: '#faa819',
     paddingVertical: height * 0.015,
     paddingHorizontal: width * 0.1,
     borderRadius: 5,
@@ -879,7 +882,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    // backgroundColor: "#A5D6A7", // Light green
+    // backgroundColor: "#A5D6A7", // Light #faa819
     paddingVertical: 8,
     paddingHorizontal: 0,
     borderRadius: 8,
@@ -891,7 +894,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#000', // Dark green Text
+    color: '#000', // Dark #faa819 Text
   },
   detailText: {
     fontSize: 14,
@@ -900,7 +903,7 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontSize: 14,
-    // color: "#388E3C", // Medium green for Links
+    // color: "#388E3C", // Medium #faa819 for Links
     fontWeight: 'bold',
     marginBottom: 5,
   },
@@ -921,7 +924,7 @@ const styles = StyleSheet.create({
   mapIndicationText: {
     marginLeft: 6,
     fontSize: 12,
-    color: 'green',
+    color: '#faa819',
     fontStyle: 'italic',
   },
 });

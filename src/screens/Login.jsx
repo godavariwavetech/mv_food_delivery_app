@@ -192,7 +192,7 @@ const LoginScreen = ({ navigation }) => {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
-        <Text style={{ color: 'green', marginTop: verticalScale(20) }}>
+        <Text style={{ color: '#faa819', marginTop: verticalScale(20) }}>
           Don't have an account? Register
         </Text>
       </TouchableOpacity>
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     width: '100%',
-    backgroundColor: 'green',
+    backgroundColor: '#faa819',
     paddingVertical: verticalScale(12),
     borderRadius: moderateScale(10),
     alignItems: 'center',
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(15),
   },
   forgotPasswordText: {
-    color: 'green',
+    color: '#faa819',
     fontSize: scale(12),
   },
 

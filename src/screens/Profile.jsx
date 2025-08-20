@@ -79,7 +79,7 @@ const ProfileScreen = () => {
   if(loader){
     return(
       <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-        <ActivityIndicator size={'large'} color={'green'} />
+        <ActivityIndicator size={'large'} color={'#faa819'} />
       </View>
     )
   }
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: verticalScale(15),
     paddingLeft: wp(5),
-    backgroundColor: "green",
+    backgroundColor: "#faa819",
     marginBottom: hp(1),
     width: "100%",
   },
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     right: 0,
-    backgroundColor: "green",
+    backgroundColor: "#faa819",
     width: scale(30),
     height: scale(30),
     borderRadius: scale(15),
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
-    backgroundColor: "green",
+    backgroundColor: "#faa819",
     paddingVertical: moderateScale(10),
     borderRadius: moderateScale(5),
     marginTop: verticalScale(10),
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: moderateScale(10),
     alignItems: "center",
-    backgroundColor: "green",
+    backgroundColor: "#faa819",
     marginHorizontal: scale(5),
     borderRadius: moderateScale(5),
   },

@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase', // Make it more readable
   },
   onlineText: {
-    color: '#00FF00', // Bright Neon Green
-    textShadowColor: '#003300', // Dark Green Shadow
+    color: '#00FF00', // Bright Neon #faa819
+    textShadowColor: '#003300', // Dark #faa819 Shadow
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 3,
   },

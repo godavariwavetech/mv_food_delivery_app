@@ -50,7 +50,7 @@ const formatDate = (dateString) => {
 
       {/* Address & Distance */}
       <View style={styles.infoRow}>
-        <FontAwesome5 name="location-arrow" size={18} color="green" />
+        <FontAwesome5 name="location-arrow" size={18} color="#faa819" />
         <Text style={styles.infoText} numberOfLines={2}>
           {order.delivery_address}
         </Text>
