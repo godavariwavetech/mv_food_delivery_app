@@ -17,7 +17,7 @@ const AccountsScreen = () => {
   const [refreshing, setRefreshing] = React.useState(false);
   const adminFee = paymentSummary?.delivery_charges * 0.10 * (1 + adminPercentage/100);
   const cashInHand = paymentSummary?.cod_amount;
-  const onlineEarnings = paymentSummary?.delivery_charges - adminFee;
+  const onlineEarnings = paymentSummary?.delivery_charges;
   const finalPaymentAmount = onlineEarnings - cashInHand;
 
   const fetchReportingHistory = async () => {
@@ -50,6 +50,8 @@ const AccountsScreen = () => {
     setRefreshing(true);
     fetchReportingHistory();
   };
+
+  // console.log(object);
 
   return (
     <View style={styles.container}>
@@ -168,18 +170,18 @@ const AccountsScreen = () => {
               <View style={styles.divider} />
 
               {/* Admin Fee */}
-              <View style={styles.paymentRow}>
+              {/* <View style={styles.paymentRow}>
                 <MaterialCommunityIcons name="account-cog" size={20} color="#E91E63" />
                 <Text style={styles.methodText}>Admin Fee (10% + {adminPercentage}% GST)</Text>
                 <View style={styles.paymentDetails}>
                   <Text style={styles.detailText}>₹{adminFee?.toFixed(2)}</Text>
                 </View>
-              </View>
+              </View> */}
 
               <View style={styles.divider} />
 
               {/* Final Delivery Charges */}
-              <View style={styles.paymentRow}>
+              {/* <View style={styles.paymentRow}>
                 <MaterialCommunityIcons name="truck-check" size={20} color="#4CAF50" />
                 <Text style={styles.methodText}>Final Delivery Charges</Text>
                 <View style={styles.paymentDetails}>
@@ -187,11 +189,11 @@ const AccountsScreen = () => {
                     ₹{paymentSummary.delivery_charges}
                   </Text>
                   <Text style={[styles.detailText, { color: '#faa819', marginLeft: 8 }]}>
-                    ₹{(paymentSummary.delivery_charges - (adminFee || 0)).toFixed(2)}
+                    ₹{(paymentSummary.delivery_charges - (0)).toFixed(2)}
                   </Text>
                 </View>
               </View>
-              <View style={styles.divider} />
+              <View style={styles.divider} /> */}
 
               <View style={styles.paymentRow}>
                 <MaterialCommunityIcons name="wallet" size={20} color="#4CAF50" />

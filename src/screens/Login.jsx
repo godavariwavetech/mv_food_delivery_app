@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  Dimensions,
   ActivityIndicator,
   StatusBar,
 } from 'react-native';
@@ -16,9 +15,8 @@ import { Alert } from 'react-native';
 import { AuthContext } from "../context/AuthContext";
 import CustomAlert from '../components/CustomAlert';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-
-const { width, height } = Dimensions.get('window');
+// --- ⬇️ 1. Import the new modal component ---
+import TermsModal from '../components/TermsModal';
 
 const LoginScreen = ({ navigation }) => {
   const { login } = useContext(AuthContext);
@@ -30,8 +28,10 @@ const LoginScreen = ({ navigation }) => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
-
+  const [isAgreed, setIsAgreed] = useState(false);
+  
+  // This state now only controls visibility
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const validatePhoneNumber = (number) => {
     const indianPhoneRegex = /^[6-9]\d{9}$/;
@@ -43,7 +43,6 @@ const LoginScreen = ({ navigation }) => {
 
   const validatePassword = (pass) => {
     if (!pass) return 'Password is required';
-    // if (pass.length < 6) return 'Password must be at least 6 characters';
     return '';
   };
 
@@ -73,7 +72,8 @@ const LoginScreen = ({ navigation }) => {
     mobileNumber.length === 10 &&
     password.length > 0 &&
     !errors.mobileNumber &&
-    !errors.password;
+    !errors.password &&
+    isAgreed;
 
   const handleLogin = async () => {
     if (isButtonEnabled) {
@@ -82,24 +82,17 @@ const LoginScreen = ({ navigation }) => {
         const response = await ApiService.login(mobileNumber, password);
         console.log(response, 'loginRes')
         if (response.status === 200 && response.data.length > 0) {
-          console.log('Login Success:', response);
           login(response.data[0]);
           navigation.replace('MainApp');
-          // navigation.replace('Registration')
         } else if (response.status === 300) {
-          // Alert.alert('please wait until verification complete ')
           setAlertMessage('Please wait until verification is complete from Admin');
           setAlertVisible(true);
           setPassword('');
           setMobileNumber('');
         }
         else {
-          // Alert.alert("Error", "Invalid credentials");
           setAlertMessage('Invalid credentials');
           setAlertVisible(true);
-          // setPassword('');
-          // setMobileNumber('');
-          // navigation.navigate('MainApp');
         }
       } catch (error) {
         console.error('Login Error:', error);
@@ -131,18 +124,6 @@ const LoginScreen = ({ navigation }) => {
           onBlur={() => handleBlur('mobileNumber')}
         />
         {touched.mobileNumber && errors.mobileNumber ? <Text style={styles.errorText}>{errors.mobileNumber}</Text> : null}
-
-        {/* <TextInput
-          style={[styles.input, errors.password && touched.password && styles.inputError]}
-          placeholder="Password"
-          placeholderTextColor="gray"
-          secureTextEntry
-          value={password}
-          onChangeText={handlePasswordChange}
-          onBlur={() => handleBlur('password')}
-        />
-        {touched.password && errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null} */}
-
 
         <View style={styles.passwordContainer}>
           <TextInput
@@ -179,6 +160,22 @@ const LoginScreen = ({ navigation }) => {
         <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
       </TouchableOpacity>
 
+      <View style={styles.agreementContainer}>
+        <TouchableOpacity onPress={() => setIsAgreed(!isAgreed)} style={styles.checkbox}>
+          <Icon
+            name={isAgreed ? 'checkbox-marked' : 'checkbox-blank-outline'}
+            size={24}
+            color={isAgreed ? '#faa819' : 'gray'}
+          />
+        </TouchableOpacity>
+        <Text style={styles.agreementText}>
+          I agree to the{' '}
+          <Text style={styles.linkText} onPress={() => setIsModalVisible(true)}>
+            Terms & Conditions
+          </Text>
+        </Text>
+      </View>
+
       <TouchableOpacity
         style={[styles.loginButton, !isButtonEnabled && styles.disabledButton]}
         onPress={handleLogin}
@@ -203,10 +200,17 @@ const LoginScreen = ({ navigation }) => {
         onClose={() => setAlertVisible(false)}
       />
 
+      {/* --- ⬇️ 2. Use the new component here --- */}
+      <TermsModal 
+        visible={isModalVisible} 
+        onClose={() => setIsModalVisible(false)} 
+      />
+
     </View>
   );
 };
 
+// --- 3. Styles for Login Screen remain (modal styles are removed) ---
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -218,7 +222,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 200,
     height: 200,
-    marginBottom: verticalScale(30),
+    marginBottom: verticalScale(20),
     borderRadius: 10,
   },
   inputContainer: {
@@ -236,13 +240,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   input2: {
-    // height: verticalScale(45),
-    // borderWidth: 1,
-    // borderColor: '#e0e0e0',
-    // borderRadius: moderateScale(10),
-    // padding: moderateScale(10),
     backgroundColor: '#f5f5f5',
-    // marginBottom: verticalScale(10),
     fontSize: scale(14),
     color: '#000',
   },
@@ -254,9 +252,7 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: scale(12),
     marginBottom: verticalScale(5),
-    padding: moderateScale(5),
-    borderRadius: moderateScale(5),
-    // backgroundColor: '#ffebee',
+    paddingLeft: moderateScale(5),
   },
   loginButton: {
     width: '100%',
@@ -264,6 +260,7 @@ const styles = StyleSheet.create({
     paddingVertical: verticalScale(12),
     borderRadius: moderateScale(10),
     alignItems: 'center',
+    marginTop: verticalScale(15),
   },
   disabledButton: {
     backgroundColor: '#ccc',
@@ -273,19 +270,16 @@ const styles = StyleSheet.create({
     fontSize: scale(16),
     fontWeight: 'bold',
   },
-
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#e0e0e0',
     borderRadius: moderateScale(10),
-    paddingHorizontal: moderateScale(10),
     backgroundColor: '#f5f5f5',
     marginBottom: verticalScale(10),
     height: verticalScale(45),
   },
-
   forgotPasswordContainer: {
     width: '100%',
     alignItems: 'flex-end',
@@ -295,7 +289,25 @@ const styles = StyleSheet.create({
     color: '#faa819',
     fontSize: scale(12),
   },
-
+  agreementContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: verticalScale(5),
+    marginBottom: verticalScale(10),
+  },
+  checkbox: {
+    marginRight: moderateScale(8),
+  },
+  agreementText: {
+    fontSize: scale(13),
+    color: '#333',
+  },
+  linkText: {
+    color: '#faa819',
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
 });
 
 export default LoginScreen;

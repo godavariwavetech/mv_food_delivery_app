@@ -1,22 +1,26 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createStackNavigator } from '@react-navigation/stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+// --- Import all your screens ---
 import OrdersScreen from '../screens/Orders';
-import Ordertracking from '../screens/Ordertracking';
 import CompletedOrders from '../screens/CompletedOrders';
-import Payment from '../screens/Payment';
 import Contact from '../screens/Contact';
 import ProfileScreen from '../screens/Profile';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { createStackNavigator } from '@react-navigation/stack';
 import EditProfileScreen from '../screens/EditProfile';
 import AccountsScreen from '../screens/AccountsScreen';
 import ReportsScreen from '../screens/ReportsScreen';
 import DeleteAccountScreen from '../screens/DeleteAccountScreen';
-import { SafeAreaView } from 'react-native-safe-area-context';
+// --- ⬇️ 1. Import the new Terms and Conditions screen ---
+import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
+
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
+// This stack for Profile -> Edit Profile remains unchanged
 const ProfileStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -28,124 +32,115 @@ const ProfileStack = () => {
 
 const DrawerNavigator = () => {
   return (
-  <SafeAreaView style={{flex:1,backgroundColor:"#faa819"}}>
-    <Drawer.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        drawerStyle: {
-          backgroundColor: '#FFFFFF', // White background
-        },
-        headerShown: false,
-        drawerActiveBackgroundColor: "#faa819", // Light Lime #faa819
-        drawerActiveTintColor: "#FFFFFF", // White text/icons for active item
-        drawerInactiveTintColor: "#333333", // Dark gray for inactive text/icons
-        drawerLabelStyle: { fontSize: 16, fontWeight: 'bold' },
-      }}
-
-    >
-      {/* Orders Screen */}
-      <Drawer.Screen
-        name="Home"
-        component={OrdersScreen}
-        options={{
-          drawerIcon: ({ color }) => (
-            <MaterialIcons name="list" size={22} color={color} />
-          ),
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#faa819" }}>
+      <Drawer.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          drawerStyle: {
+            backgroundColor: '#FFFFFF', // White background
+          },
+          headerShown: false,
+          drawerActiveBackgroundColor: "#faa819", // Light Lime #faa819
+          drawerActiveTintColor: "#FFFFFF", // White text/icons for active item
+          drawerInactiveTintColor: "#333333", // Dark gray for inactive text/icons
+          drawerLabelStyle: { fontSize: 16, fontWeight: 'bold' },
         }}
-      />
+      >
+        {/* Orders Screen */}
+        <Drawer.Screen
+          name="Home"
+          component={OrdersScreen}
+          options={{
+            drawerIcon: ({ color }) => (
+              <MaterialIcons name="list" size={22} color={color} />
+            ),
+          }}
+        />
 
-      {/* Order Tracking Screen */}
-      {/* <Drawer.Screen
-        name="Order Tracking"
-        component={Ordertracking}
-        options={{
-          drawerIcon: ({ color }) => (
-            <MaterialIcons name="location-on" size={22} color={color} />
-          ),
-        }}
-      /> */}
+        {/* Completed Orders */}
+        <Drawer.Screen
+          name="Completed Orders"
+          component={CompletedOrders}
+          options={{
+            drawerIcon: ({ color }) => (
+              <MaterialIcons name="check-circle" size={22} color={color} />
+            ),
+          }}
+        />
 
-      {/* Completed Orders */}
-      <Drawer.Screen
-        name="Completed Orders"
-        component={CompletedOrders}
-        options={{
-          drawerIcon: ({ color }) => (
-            <MaterialIcons name="check-circle" size={22} color={color} />
-          ),
-        }}
-      />
+        {/* Payments History */}
+        <Drawer.Screen
+          name="Payments History"
+          component={AccountsScreen}
+          options={{
+            drawerIcon: ({ color }) => (
+              <MaterialIcons
+                name="account-balance-wallet"
+                size={22}
+                color={color}
+              />
+            ),
+          }}
+        />
 
-      {/* Payments */}
-      {/* <Drawer.Screen
-        name="Payments"
-        component={Payment}
-        options={{
-          drawerIcon: ({color}) => (
-            <MaterialIcons name="payment" size={22} color={color} />
-          ),
-        }}
-      /> */}
+        {/* Reports */}
+        <Drawer.Screen
+          name="Reports"
+          component={ReportsScreen}
+          options={{
+            drawerIcon: ({ color }) => (
+              <MaterialIcons name="work-history" size={22} color={color} />
+            ),
+          }}
+        />
 
-      {/* Contact Details */}
+        {/* Contact Details */}
+        <Drawer.Screen
+          name="Contact Details"
+          component={Contact}
+          options={{
+            drawerIcon: ({ color }) => (
+              <MaterialIcons name="phone" size={22} color={color} />
+            ),
+          }}
+        />
+                <Drawer.Screen
+          name="Terms & Conditions"
+          component={TermsAndConditionsScreen}
+          options={{
+            drawerIcon: ({ color }) => (
+              <MaterialIcons name="description" size={22} color={color} />
+            ),
+          }}
+        />
 
-      <Drawer.Screen
-        name="Payments History"
-        component={AccountsScreen}
-        options={{
-          drawerIcon: ({ color }) => (
-            <MaterialIcons
-              name="account-balance-wallet"
-              size={22}
-              color={color}
-            />
-          ),
-        }}
-      />
+        {/* Profile Stack (Nested Navigator) */}
+        <Drawer.Screen
+          name="Profile"
+          component={ProfileStack}
+          options={{
+            drawerIcon: ({ color }) => (
+              <MaterialIcons name="person" size={22} color={color} />
+            ),
+          }}
+        />
 
-      <Drawer.Screen
-        name="Reports"
-        component={ReportsScreen}
-        options={{
-          drawerIcon: ({ color }) => (
-            <MaterialIcons name="work-history" size={22} color={color} />
-          ),
-        }}
-      />
+        {/* --- ⬇️ 2. Add the new screen to the drawer menu --- */}
 
-      {/* Profile Stack (Nested Navigator) */}
-      <Drawer.Screen
-        name="Contact Details"
-        component={Contact}
-        options={{
-          drawerIcon: ({ color }) => (
-            <MaterialIcons name="phone" size={22} color={color} />
-          ),
-        }}
-      />
 
-      <Drawer.Screen
-        name="Profile"
-        component={ProfileStack}
-        options={{
-          drawerIcon: ({ color }) => (
-            <MaterialIcons name="person" size={22} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="Delete Account"
-        component={DeleteAccountScreen}
-        options={{
-          drawerIcon: ({ color }) => (
-            <MaterialIcons name="delete" size={22} color={color} />
-          ),
-        }}
-      />
-
-    </Drawer.Navigator>
-  </SafeAreaView>
-
+        {/* Delete Account */}
+        <Drawer.Screen
+          name="Delete Account"
+          component={DeleteAccountScreen}
+          options={{
+            drawerIcon: ({ color }) => (
+              <MaterialIcons name="delete" size={22} color={color} />
+            ),
+          }}
+        />
+        
+      </Drawer.Navigator>
+    </SafeAreaView>
   );
 };
 

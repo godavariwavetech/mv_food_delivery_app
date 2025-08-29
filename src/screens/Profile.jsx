@@ -144,12 +144,13 @@ const ProfileScreen = () => {
               <Text style={styles.modalTitle}>Logout</Text>
               <Text style={styles.modalText}>Are you sure you want to logout?</Text>
               <View style={styles.modalButtons}>
+                  <TouchableOpacity onPress={() => setLogoutVisible(false)} style={[styles.modalButton, styles.cancelButton]}>
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={confirmLogout} style={styles.modalButton}>
                   <Text style={styles.modalButtonText}>Confirm</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setLogoutVisible(false)} style={[styles.modalButton, styles.cancelButton]}>
-                  <Text style={styles.modalButtonText}>Cancel</Text>
-                </TouchableOpacity>
+              
               </View>
             </View>
           </View>
