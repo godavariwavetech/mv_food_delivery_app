@@ -1,83 +1,72 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Separator from './Separator';
 
+// The component now accepts onPress and onAccept props
+const OrderCard = ({ order, onPress, onAccept }) => {
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    }).format(date);
+  };
 
-const OrderCard = ({ order }) => {
-
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "2-digit",   
-    year: "numeric", 
-  }).format(date);
-};
   return (
-    <View style={styles.card}>
-      {/* Order Header - Category & Time */}
-      <View style={{ flexDirection: "column" }}>
-        <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ marginBottom: 5 }}># { } {order.order_ids}</Text>
-          <View style={{flexDirection: "row"}}>
-            {/* <MaterialIcons name="currency-rupee" size={18} color="#555" /> */}
-            <Text style={{ marginBottom: 5 }}>&#8377;{order.grand_total}</Text>
-          </View>
+    // The whole card is wrapped in a TouchableOpacity for navigation
+    <TouchableOpacity onPress={onPress} style={styles.card}>
+      <View>
+        {/* Order Header - ID, Total, and Time */}
+        <View style={styles.orderHeader}>
+          <Text style={styles.orderId}># {order.order_ids}</Text>
+          <Text style={styles.grandTotal}>₹{order.grand_total}</Text>
         </View>
         <View style={styles.timeContainer}>
           <Ionicons name="time-outline" size={16} color="#555" />
           <Text style={styles.timeText}>{formatDate(order?.order_date)} {order?.order_time}</Text>
         </View>
-      </View>
-      <Separator />
-      <View style={styles.header}>
-        {/* <Image source={{ uri: order.category_image }} style={styles.categoryIcon} /> */}
-        <FontAwesome5 name="map-marker-alt" size={18} color="#E53935" />
-        <Text style={styles.categoryText}>{order.shop_name}</Text>
-      </View>
 
-      {/* Item Image & Info */}
-      {/* <View style={styles.itemContainer}>
-        <Image source={{ uri: order.category_image }} style={styles.itemImage} />
-        <View style={styles.itemDetails}>
-          <Text style={styles.itemName}>{order.item_name}</Text>
-          <Text style={styles.itemPrice}>₹{order.item_price} x {order.item_count}</Text>
+        <Separator />
+
+        {/* Shop and Delivery Address */}
+        <View style={styles.addressSection}>
+          <View style={styles.infoRow}>
+            <FontAwesome5 name="store-alt" size={15} color="#E53935" />
+            <Text style={styles.infoText} numberOfLines={1}>{order.shop_name}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <FontAwesome5 name="location-arrow" size={15} color="#faa819" />
+            <Text style={styles.infoText} numberOfLines={2}>
+              {order.delivery_address}
+            </Text>
+          </View>
         </View>
-      </View> */}
 
-      {/* Address & Distance */}
-      <View style={styles.infoRow}>
-        <FontAwesome5 name="location-arrow" size={18} color="#faa819" />
-        <Text style={styles.infoText} numberOfLines={2}>
-          {order.delivery_address}
-        </Text>
-      </View>
+        {/* Driver's Earnings */}
+        {order.delivery_charges && (
+          <>
+            <Separator />
+            <View style={styles.earningContainer}>
+              <Text style={styles.earningLabel}>Your Earnings</Text>
+              <Text style={styles.earningValue}>
+                ₹{order.delivery_charges}
+              </Text>
+            </View>
+          </>
+        )}
 
-      {/* Delivery Details */}
-      <View style={styles.deliveryInfo}>
-        {/* <View style={styles.infoRow}>
-          <MaterialIcons name="directions-bike" size={20} color="#4CAF50" />
-          <Text style={styles.infoText}>Distance: {order.order_distance} km</Text>
-        </View> */}
-        {/* <View style={styles.infoRow}>
-          <Ionicons name="call-outline" size={20} color="#2196F3" />    
-          <TouchableOpacity onPress={() => Linking.openURL(`tel:${order.customer_mobile_number}`)}>
-          <Text style={styles.infoText}>{order.customer_mobile_number}</Text>
+        {/* --- MODIFICATION START: Accept Button for New Orders --- */}
+        {/* {order.order_status === 1 && (
+          <TouchableOpacity style={styles.acceptButton} onPress={onAccept}>
+            <Text style={styles.acceptButtonText}>Accept Order</Text>
           </TouchableOpacity>
-        </View> */}
+        )} */}
+        {/* --- MODIFICATION END --- */}
       </View>
-
-      {/* Total & OTP */}
-      {/* <View style={styles.footer}>
-        <Text style={styles.totalText}>Grand Total: ₹{order.grandTotal}</Text>
-        <View style={styles.otpContainer}>
-          <Text style={styles.otpText}>OTP: {order.customerOtp}</Text>
-        </View>
-      </View> */}
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -85,97 +74,83 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 15,
-    marginVertical: 10,
+    padding: 12, // Reduced padding
+    marginVertical: 6, // Reduced vertical margin
+    marginHorizontal: 4, // Added horizontal margin for shadow
     shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 4,
-
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4, // Reduced shadow radius
+    elevation: 4,
   },
-  header: {
+  orderHeader: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
-  categoryIcon: {
-    width: 25,
-    height: 25,
-    borderRadius: 12,
-    marginRight: 10,
-  },
-  categoryText: {
-    fontSize: 16,
+  orderId: {
+    fontSize: 15,
     fontWeight: 'bold',
-    flex: 1,
-    marginLeft: 5
+    color: '#333',
+  },
+  grandTotal: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#333',
   },
   timeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   timeText: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#555',
     marginLeft: 5,
   },
-  itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  itemImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
-    marginRight: 10,
-  },
-  itemDetails: {
-    flex: 1,
-  },
-  itemName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  itemPrice: {
-    fontSize: 14,
-    color: '#777',
+  addressSection: {
+    marginVertical: 8, // Reduced margin
   },
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    marginVertical: 4, // Reduced margin
   },
   infoText: {
-    fontSize: 14,
-    marginLeft: 8,
+    fontSize: 13,
+    marginLeft: 10,
     flex: 1,
     color: '#333',
   },
-  deliveryInfo: {
-    marginTop: 10,
-  },
-  footer: {
+  earningContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 12,
     alignItems: 'center',
+    paddingTop: 10,
+    marginTop: 4,
   },
-  totalText: {
+  earningLabel: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '500',
+  },
+  earningValue: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#27ae60',
   },
-  otpContainer: {
-    backgroundColor: '#FFEB3B',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 6,
+  // --- STYLES FOR ACCEPT BUTTON ---
+  acceptButton: {
+    backgroundColor: '#27ae60', // Green color for accept
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginTop: 12,
   },
-  otpText: {
-    fontSize: 14,
+  acceptButtonText: {
+    color: '#fff',
+    fontSize: 15,
     fontWeight: 'bold',
-    color: '#333',
   },
 });
 

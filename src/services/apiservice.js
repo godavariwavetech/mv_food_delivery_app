@@ -58,8 +58,10 @@ const ApiService = {
   // 🔹 Fetch Orders
   getOrders: async user => {
     try {
+      console.log(user,">>>>>>>>>>>>>>>>>>>>>>>>>User");
       const response = await apiClient.post('/getcurrentorders', user);
-      console.log('vvvvvvvvvvvv-', response.data);
+            console.log(response,">>>>>>>>>>>>>>resposnemnsmnrmsnermsnmrnsemnrmesn");
+
       return response.data;
     } catch (error) {
       throw handleApiError(error);
@@ -69,6 +71,7 @@ const ApiService = {
     try {
       console.log(id,"+++++>>>IDDDD")
       const response = await apiClient.post('/getorderdetails', {order_id: id});
+      console.log(">>>>>>>>>OrderDDDDDOREEPEPE",response);
       return response.data;
     } catch (error) {
       throw handleApiError(error);
@@ -247,7 +250,7 @@ const ApiService = {
         user_type: 2,
         location_id: delivery_boy_location_id,
       });
-      console.log('Response>>>>>>>>>>>', response);
+      console.log('Response>>>>>>>>>>>POst player', response);
       return response.data;
     } catch (error) {
       throw handleApiError(error);

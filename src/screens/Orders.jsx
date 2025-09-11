@@ -2,13 +2,15 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   ScrollView,
   StyleSheet,
   StatusBar,
   Alert,
-  RefreshControl,PermissionsAndroid,
+  RefreshControl,
+  PermissionsAndroid,
   Linking,
+  Platform,
+  TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFocusEffect } from '@react-navigation/native';
@@ -18,15 +20,14 @@ import { moderateScale, verticalScale } from 'react-native-size-matters';
 import ApiService from '../services/apiservice';
 import ToggleSwitch from '../components/ToggleSwitch';
 import { AuthContext } from "../context/AuthContext";
-import OrderCard from '../components/orderCard';
-import { getFCMToken, getTokenValue } from '../NotificationService';
+import OrderCard from '../components/orderCard'; // Corrected import name
+import { getTokenValue } from '../NotificationService';
 import Geolocation from 'react-native-geolocation-service';
 
-// import { getFCMToken } from '../NotificationService';
 const OrdersScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
-  const [acceptedOrder, setAcceptedOrder] = useState(null);
+  const [acceptedOrders, setAcceptedOrders] = useState([]);
   const [toggle, setToggle] = useState(1);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -35,16 +36,12 @@ const OrdersScreen = ({ navigation }) => {
   const [driverLocation, setDriverLocation] = useState({ latitude: null, longitude: null });
 
   const uploadToken = async () => {
-    console.log(">>>>>>>>>>>>>>>>>VCALLIN")
     const token = await getTokenValue();
-    // console.log("TOKEN>>>>>>>>>>>>>>>>>",token,ApiService)
-    const value = await ApiService.uploadFcmToken(token,user?.id,user?.delivery_boy_location_id);
-        setDeliveryBoyLocationId(user?.delivery_boy_location_id)
+    await ApiService.uploadFcmToken(token, user?.id, user?.delivery_boy_location_id);
+    setDeliveryBoyLocationId(user?.delivery_boy_location_id);
+  };
 
-    console.log("value",value)
-  }
-
-   const requestPermission = async () => {
+  const requestPermission = async () => {
     if (Platform.OS === 'android') {
       try {
         const granted = await PermissionsAndroid.request(
@@ -52,171 +49,147 @@ const OrdersScreen = ({ navigation }) => {
           {
             title: 'Location Access Required',
             message: 'This app needs your location.',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
             buttonPositive: 'OK',
+            buttonNegative: 'Cancel',
           }
         );
-        console.log('Permission result:', granted);
         return granted === PermissionsAndroid.RESULTS.GRANTED;
       } catch (err) {
         console.warn('Permission error:', err);
         return false;
       }
     }
-    return true; // iOS assumes permission if declared in Info.plist
+    return true;
   };
 
   useFocusEffect(
     useCallback(() => {
       let intervalId = null;
-
       const getLocation = async () => {
         const hasPermission = await requestPermission();
-        console.log('Permission granted:', hasPermission);
         if (!hasPermission) {
           Alert.alert(
             'Location Permission Denied',
             'Please enable location permission in your settings.',
-            [
-              { text: 'Open Settings', onPress: () => Linking.openSettings() },
-              { text: 'Cancel', style: 'cancel' },
-            ]
+            [{ text: 'Open Settings', onPress: () => Linking.openSettings() }, { text: 'Cancel', style: 'cancel' }]
           );
           return false;
         }
         return true;
       };
-
       const fetchLocation = () => {
         Geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
-            console.log('📍 Location Update (1 min) - Latitude:', latitude, 'Longitude:', longitude);
-            setDriverLocation({ latitude, longitude }); // Update state with latest location
-            const payload={
-              user_id:user?.id,
-              latitude:latitude,
-              longitude:longitude,
-              locationId:deliveryBoylocationId
-            }
-            console.log(payload,'payload');
-            // Optionally send to backend
-            // ApiService.postDeliveryBoyLocation(user?.id, { latitude, longitude},deliveryBoylocationId);
+            setDriverLocation({ latitude, longitude });
           },
-          (error) => {
-            console.log('❌ Error getting location:', error.code, error.message);
-            let message = 'Unable to fetch location. Please try again.';
-            if (error.code === 1) {
-              message = 'Location permission denied. Please enable it in settings.';
-            } else if (error.code === 2) {
-              message = 'Location services are unavailable. Please enable them.';
-            } else if (error.code === 3) {
-              message = 'Location request timed out. Please try again.';
-            }
-            Alert.alert('Location Error', message, [
-              { text: 'Open Settings', onPress: () => Linking.openSettings() },
-              { text: 'Cancel', style: 'cancel' },
-            ]);
-          },
-          {
-            enableHighAccuracy: false, // Set to true if higher accuracy is needed
-            timeout: 20000,
-            maximumAge: 30000,
-          }
+          (error) => console.log('❌ Error getting location:', error.code, error.message),
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
         );
       };
-
       const startLocationTracking = async () => {
-        //  if (toggle !== 1) return; // Only track location when online
-
         if (toggle === 1) {
           const permissionGranted = await getLocation();
           if (!permissionGranted) return;
-
-          // Fetch location immediately
           fetchLocation();
-
-          // Set interval to fetch location every 10 seconds
-          intervalId = setInterval(() => {
-            fetchLocation();
-          }, 10000);
+          intervalId = setInterval(fetchLocation, 10000);
         }
       };
-
       startLocationTracking();
-
-      // Cleanup on screen blur or component unmount
       return () => {
-        if (intervalId !== null) {
-          clearInterval(intervalId);
-          console.log('🛑 Cleared interval');
-        }
+        if (intervalId !== null) clearInterval(intervalId);
       };
     }, [toggle, user, deliveryBoylocationId])
   );
 
   useEffect(() => {
-    console.log(user,'user')
     if (user?.id) {
       fetchOrders();
-      uploadToken()
+      uploadToken();
     }
   }, [user]);
 
+  console.log(orders,">>>>>>>>>>>>>>>>>>>>>>>>>>orders");
+
   useEffect(() => {
-    const ongoingOrder = orders.find(order => order.order_status === 2);
-    setAcceptedOrder(ongoingOrder || null);
+    const ongoingOrders = orders.filter(order => order.order_status === 2 || order.order_status === 8);
+    setAcceptedOrders(ongoingOrders);
   }, [orders]);
 
-  // Function to fetch orders
   const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
       setRefreshing(true);
       const response = await ApiService.getOrders(user);
-      console.log(response, 'response');
       if (response?.status === 200) {
         setOrders(response.data);
-      } else {
-        // Alert.alert("Error", response?.message || "Failed to load orders.");
       }
     } catch (error) {
-      // Alert.alert("Error", error.message || "Something went wrong.");
+      console.error("Failed to fetch orders:", error);
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
   }, [user]);
 
-  // Fetch orders when the screen is focused
   useFocusEffect(
     useCallback(() => {
       fetchOrders();
     }, [fetchOrders])
   );
 
-  const handleAccept = orderId => {
+  const handleAccept = async (orderId) => {
+    // Optimistically update UI
     setOrders(prevOrders =>
       prevOrders.map(order =>
-        order.order_ids === orderId ? { ...order, order_status: 2 } : order
+        order.order_ids === orderId ? { ...order, order_status: 8 } : order
       )
     );
+    // Call API to accept order in the background
+    const payload = {
+      deliveryarr: [user],
+      id: user.id,
+      order_status: 8,
+      order_id: orderId,
+    };
+    try {
+      await ApiService.acceptorders(payload);
+    } catch (error) {
+      // Revert UI change on API failure
+      Alert.alert("Error", "Failed to accept the order. Please try again.");
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order.order_ids === orderId ? { ...order, order_status: 1 } : order
+        )
+      );
+    }
   };
 
   const handleComplete = orderId => {
-    setOrders(prevOrders =>
-      prevOrders.map(order =>
-        order.order_ids === orderId ? { ...order, order_status: 3 } : order
-      )
-    );
+    setOrders(prevOrders => prevOrders.filter(order => order.order_ids !== orderId));
     fetchOrders();
+  };
+  
+  const handleCardPress = (item) => {
+    if (item.order_status === 1 && acceptedOrders.length >= 3) {
+      Alert.alert(
+        "Order Limit Reached",
+        "You can only have 3 ongoing orders. Please complete one to accept a new one."
+      );
+      return;
+    }
+    navigation.navigate('Ordertracking', {
+      orderDetails: item,
+      handleAccept: () => handleAccept(item.order_ids),
+      handleComplete,
+      driverLocation: driverLocation,
+    });
   };
 
   const filteredOrders = orders.filter(order =>
     activeTab === 'new'
       ? order.order_status === 1
-      : order.order_status === 2 || order.order_status === 8
+      : (order.order_status === 2 || order.order_status === 8)
   );
 
   return (
@@ -231,95 +204,75 @@ const OrdersScreen = ({ navigation }) => {
             {user?.delivery_boy_name ? user?.delivery_boy_name.charAt(0).toUpperCase() + user.delivery_boy_name.slice(1) : "Welcome"}
           </Text>
         </View>
-        {!acceptedOrder && <ToggleSwitch toggle={toggle} setToggle={setToggle} />}
+        {acceptedOrders.length === 0 && <ToggleSwitch toggle={toggle} setToggle={setToggle} />}
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} style={{flex:1,backgroundColor: '#F8F9FA'}}>
+      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: '#F8F9FA' }}>
         <View style={{ backgroundColor: '#F8F9FA', flex: 1 }}>
-        {/* Top Tabs (New Orders and Accepted Orders) */}
-        <View style={styles.tabContainer}>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === 'new' ? styles.activeTab : null]}
-            onPress={() => setActiveTab('new')}
-          >
-            <Text style={[styles.tabText, activeTab === 'new' ? styles.activeTabText : null]}>
-              New Orders
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === 'accepted' ? styles.activeTab : null]}
-            onPress={() => setActiveTab('accepted')}
-          >
-            <Text style={[styles.tabText, activeTab === 'accepted' ? styles.activeTabText : null]}>
-              Ongoing Orders
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-      <View style={styles.container}>
-        {toggle === 0 && !acceptedOrder ? (
-          <View style={styles.offlineContainer}>
-            <Icon name="wifi" size={scale(50)} color="gray" />
-            <Text style={styles.offlineText}>You are offline</Text>
-            <Text style={styles.offlineSubText}>
-              Please go online to see new orders.
-            </Text>
+          <View style={styles.tabContainer}>
+            <TouchableOpacity
+              style={[styles.tab, activeTab === 'new' ? styles.activeTab : null]}
+              onPress={() => setActiveTab('new')}
+            >
+              <Text style={[styles.tabText, activeTab === 'new' ? styles.activeTabText : null]}>
+                New Orders
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.tab, activeTab === 'accepted' ? styles.activeTab : null]}
+              onPress={() => setActiveTab('accepted')}
+            >
+              <Text style={[styles.tabText, activeTab === 'accepted' ? styles.activeTabText : null]}>
+                Ongoing Orders ({acceptedOrders.length})
+              </Text>
+            </TouchableOpacity>
           </View>
-        ) : (
-          <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={fetchOrders} />
-            }
-          >
-            {filteredOrders.length === 0 && !loading ? (
-              <View style={styles.noOrdersContainer}>
-                <Icon name="exclamation-circle" size={scale(50)} color="gray" />
-                <Text style={styles.noOrdersText}>No Orders Available</Text>
-                <Text style={styles.noOrdersSubText}>
-                  Pull down to refresh and check for new orders.
-                </Text>
+
+          <View style={styles.container}>
+            {toggle === 0 && acceptedOrders.length === 0 ? (
+              <View style={styles.offlineContainer}>
+                <Icon name="wifi" size={scale(50)} color="gray" />
+                <Text style={styles.offlineText}>You are offline</Text>
               </View>
             ) : (
-              filteredOrders
-                .filter(order => !acceptedOrder || order.order_ids === acceptedOrder.order_ids)
-                .map((item, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() =>
-                      navigation.navigate('Ordertracking', {
-                        orderDetails: item,
-                        handleAccept,
-                        handleComplete,
-                        driverLocation:driverLocation,
-                        status:'beforeComplete'  // this is for only to convert the dateformat
-                      })
-                    }
-                  >
-                    <OrderCard order={item} />
-                  </TouchableOpacity>
-                ))
+              <ScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchOrders} />}
+              >
+                {filteredOrders.length === 0 && !loading ? (
+                  <View style={styles.noOrdersContainer}>
+                    <Icon name="inbox" size={scale(50)} color="gray" />
+                    <Text style={styles.noOrdersText}>No Orders Available</Text>
+                  </View>
+                ) : (
+                  // --- MODIFICATION START: Pass props to OrderCard ---
+                  filteredOrders.map((item) => (
+                    <OrderCard
+                      key={item.order_ids}
+                      order={item}
+                      onPress={() => handleCardPress(item)}
+                      onAccept={() => handleAccept(item.order_ids)}
+                    />
+                  ))
+                  // --- MODIFICATION END ---
+                )}
+              </ScrollView>
             )}
-          </ScrollView>
-        )}
-      </View>
-
+          </View>
         </View>
-    </ScrollView>  
+      </ScrollView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: wp(3), backgroundColor: '#f8f9fa' },
+  container: { flex: 1, paddingHorizontal: wp(2), backgroundColor: '#f8f9fa' }, // Adjusted padding
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: verticalScale(15),
     paddingHorizontal: wp(3),
     backgroundColor: '#faa819',
-    marginBottom: hp(1),
-    width: '100%',
   },
   headerTitle: {
     fontSize: scale(18),
@@ -331,55 +284,39 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f8f9fa",
+    height: hp(70),
   },
   offlineText: {
-    fontSize: scale(20),
+    fontSize: scale(18),
     fontWeight: "bold",
     color: "gray",
     marginTop: verticalScale(10),
-  },
-  offlineSubText: {
-    fontSize: scale(14),
-    color: "gray",
-    marginTop: verticalScale(5),
-    textAlign: "center",
-    paddingHorizontal: wp(10),
   },
   noOrdersContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f8f9fa",
-    height: hp(55),
+    height: hp(70),
   },
   noOrdersText: {
-    fontSize: scale(20),
+    fontSize: scale(18),
     fontWeight: "bold",
     color: "gray",
     marginTop: verticalScale(10),
   },
-  noOrdersSubText: {
-    fontSize: scale(14),
-    color: "gray",
-    marginTop: verticalScale(5),
-    textAlign: "center",
-    paddingHorizontal: wp(10),
-  },
-
-   tabContainer: {
+  tabContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: verticalScale(10),
+    marginVertical: hp(1),
     backgroundColor: '#fff',
     borderRadius: moderateScale(8),
     padding: moderateScale(4),
     marginHorizontal: wp(3),
     elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 2,
   },
   tab: {
     flex: 1,
@@ -389,7 +326,6 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     backgroundColor: '#faa819',
-    borderRadius: moderateScale(6),
   },
   tabText: {
     fontSize: scale(14),
