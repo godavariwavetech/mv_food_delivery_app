@@ -114,20 +114,17 @@ const OrderTrackingScreen = ({route}) => {
 
   const handleOtpSubmit = () => {
     const enteredOtp = otp.join('');
-    const targetOtp =
-      orderStatus === 8
-        ? orderDetails.vendor_otp
-        : orderDetails.customer_otp;
+    // OTP is now only for the customer
+    const targetOtp = orderDetails.customer_otp;
 
     if (enteredOtp.length === 4 && enteredOtp === targetOtp) {
-      if (orderStatus === 8) submitVendorReceived();
-      else completedOrder();
+      completedOrder();
       setOtp(['', '', '', '']);
     } else {
       Alert.alert('Error', 'The entered OTP is incorrect.');
     }
   };
-
+  
   const accepteSubmmited = async () => {
     Alert.alert(
       'Confirm Acceptance',
@@ -203,6 +200,17 @@ const OrderTrackingScreen = ({route}) => {
     setShowOtpModal(true);
   };
 
+  const handlePickup = () => {
+    Alert.alert(
+      "Confirm Pickup",
+      "Are you sure you have picked up the order from the vendor?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", onPress: submitVendorReceived },
+      ]
+    );
+  };
+
   // --- Helper Components ---
   const InfoCard = ({title, icon, children}) => (
     <View style={styles.infoCard}>
@@ -267,7 +275,7 @@ const OrderTrackingScreen = ({route}) => {
         );
       case 8:
         return (
-          <TouchableOpacity style={[styles.actionButton, styles.vendorButton]} onPress={() => setShowOtpModal(true)}>
+          <TouchableOpacity style={[styles.actionButton, styles.vendorButton]} onPress={handlePickup}>
             <Text style={styles.actionButtonText}>Pickup Order</Text>
           </TouchableOpacity>
         );
@@ -443,9 +451,7 @@ const OrderTrackingScreen = ({route}) => {
               <View style={styles.modalContent}>
                 <Text style={styles.modalTitle}>Enter OTP</Text>
                 <Text style={styles.modalSubtitle}>
-                  {orderStatus === 8
-                    ? 'Please enter the OTP from the vendor.'
-                    : 'Please enter the OTP from the customer to complete the delivery.'}
+                  Please enter the OTP from the customer to complete the delivery.
                 </Text>
                 <View style={styles.otpContainer}>
                   {otp.map((digit, index) => (

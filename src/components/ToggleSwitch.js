@@ -1,29 +1,50 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, Animated, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import React, { useContext, useRef, useEffect } from 'react';
+import { View, Animated, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import ApiService from '../services/apiservice';
+import { AuthContext } from '../context/AuthContext';
 
 const ToggleSwitch = ({ toggle, setToggle }) => {
+  const { user } = useContext(AuthContext);
   const translateX = useRef(new Animated.Value(toggle === 1 ? 30 : 0)).current;
 
-  useEffect(() => {
+  // Handle toggle animation and server update
+  React.useEffect(() => {
+    console.log('ToggleSwitch - Toggle state changed to:', toggle);
     Animated.timing(translateX, {
-      toValue: toggle === 1 ? 30 : 0, // Adjusted value
+      toValue: toggle === 1 ? 30 : 0,
       duration: 200,
       useNativeDriver: false,
     }).start();
-  }, [toggle]);
+    
+    // Update server status when toggle changes
+    const updateServerStatus = async () => {
+      try {
+        const status = toggle === 1 ? 0 : 1;
+        await ApiService.updateDriverStatus(status, user?.id);
+        console.log('ToggleSwitch - Server status updated:', status);
+      } catch (error) {
+        console.error('ToggleSwitch - Error updating server status:', error);
+      }
+    };
+    
+    updateServerStatus();
+  }, [toggle, user?.id]);
 
   const handleToggle = () => {
+    console.log('ToggleSwitch - Manual toggle pressed, current:', toggle);
     setToggle(prevToggle => (prevToggle === 1 ? 0 : 1));
   };
 
   return (
-    <TouchableWithoutFeedback onPress={handleToggle}>
-    <View style={styles.container}>
-      <View style={[styles.toggleContainer, { backgroundColor: toggle === 1 ? '#FFF' : '#DDD' }]}>
-        <Animated.View style={[styles.swipeCircle, { backgroundColor: toggle === 1 ? '#4CAF50' : '#E53935', transform: [{ translateX }] }]} />
-      </View>
+    <View>
+      <TouchableWithoutFeedback onPress={handleToggle}>
+        <View style={styles.container}>
+          <View style={[styles.toggleContainer, { backgroundColor: toggle === 1 ? '#FFF' : '#DDD' }]}>
+            <Animated.View style={[styles.swipeCircle, { backgroundColor: toggle === 1 ? '#4CAF50' : '#E53935', transform: [{ translateX }] }]} />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
     </View>
-  </TouchableWithoutFeedback>
   );
 };
 
@@ -31,24 +52,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  label: {
-    fontSize: 18, // Bigger text
-    fontWeight: 'bold',
-    marginRight: 12, // Space between text and toggle
-    textTransform: 'uppercase', // Make it more readable
-  },
-  onlineText: {
-    color: '#00FF00', // Bright Neon #faa819
-    textShadowColor: '#003300', // Dark #faa819 Shadow
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
-  },
-  offlineText: {
-    color: '#FF4444', // Bright Red
-    textShadowColor: '#660000', // Dark Red Shadow
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
   },
   toggleContainer: {
     width: 60,
@@ -63,7 +66,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 15,
     position: 'absolute',
-    left: 5, // Initial position
+    left: 5,
   },
 });
 

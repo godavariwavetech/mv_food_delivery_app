@@ -102,6 +102,40 @@ const OrdersScreen = ({ navigation }) => {
     }, [toggle, user, deliveryBoylocationId])
   );
 
+    // Function to sync toggle state with server
+  const syncToggleWithServer = async () => {
+    try {
+      fetchOrders(true)
+      const profileData = await ApiService.getProfileData(user);
+      const serverStatus = profileData?.data?.data?.[0]?.delivery_boy_active_status;
+      const newToggleState = serverStatus === 0 ? 1 : 0;
+      
+      console.log('Orders - Server status:', serverStatus, 'Current toggle:', toggle, 'New toggle:', newToggleState);
+      
+      if (newToggleState !== toggle) {
+        console.log('Orders - Updating toggle from server:', toggle, '->', newToggleState);
+        setToggle(newToggleState);
+      }
+    } catch (error) {
+      console.error('Orders - Error syncing with server:', error);
+    }
+  };
+
+    useEffect(() => {
+    if (!user?.id) return;
+    
+    // Initial sync
+    syncToggleWithServer();
+    
+    // Set up interval for polling every 2 seconds
+    const intervalId = setInterval(syncToggleWithServer, 2000);
+    
+    // Cleanup interval on unmount
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [user?.id, toggle]);
+
   useEffect(() => {
     if (user?.id) {
       fetchOrders();
@@ -116,10 +150,10 @@ const OrdersScreen = ({ navigation }) => {
     setAcceptedOrders(ongoingOrders);
   }, [orders]);
 
-  const fetchOrders = useCallback(async () => {
+  const fetchOrders = useCallback(async (showLoad=false) => {
     try {
-      setLoading(true);
-      setRefreshing(true);
+      !showLoad && setLoading(true);
+      !showLoad && setRefreshing(true);
       const response = await ApiService.getOrders(user);
       if (response?.status === 200) {
         setOrders(response.data);
@@ -152,6 +186,10 @@ const OrdersScreen = ({ navigation }) => {
       order_status: 8,
       order_id: orderId,
     };
+
+    // console.log(payload,"++++++++++++++++++++>>>>>>>>PAUAYAYAYA");
+    // return
+
     try {
       await ApiService.acceptorders(payload);
     } catch (error) {
@@ -180,7 +218,7 @@ const OrdersScreen = ({ navigation }) => {
     }
     navigation.navigate('Ordertracking', {
       orderDetails: item,
-      handleAccept: () => handleAccept(item.order_ids),
+      handleAccept: () => handleAccept(item.id||item.order_id||item.order_ids),
       handleComplete,
       driverLocation: driverLocation,
     });
@@ -251,7 +289,7 @@ const OrdersScreen = ({ navigation }) => {
                       key={item.order_ids}
                       order={item}
                       onPress={() => handleCardPress(item)}
-                      onAccept={() => handleAccept(item.order_ids)}
+                      onAccept={() => handleAccept(item.id||item.order_id||item.order_ids)}
                     />
                   ))
                   // --- MODIFICATION END ---

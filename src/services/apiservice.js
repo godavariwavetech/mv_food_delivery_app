@@ -244,7 +244,7 @@ const ApiService = {
         },
         'fcm_token,user_id>>>>>>>>>>>>>>>>>>>',
       );
-      const response = await publicapiClient.post('/postplayer_id', {
+      const response = await apiClient.post('/postplayer_id', {
         player_id: fcm_token,
         user_id: user_id,
         user_type: 2,
@@ -288,6 +288,25 @@ const ApiService = {
       throw handleApiError(error);
     }
   },
+
+    updateDriverStatus: async (status,id) => {
+    try {
+      console.log({ 
+        active_status:status,
+        deliveryboy_id:id
+      })
+      const response = await apiClient.post("/deliveryboyactivestatus", { 
+        active_status:status,
+        deliveryboy_id:id
+      });
+      console.log(response,"+++++++++++++UPDATEA RESPONSE")
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error)
+    }
+  }
+
+
 };
 
 export default ApiService;

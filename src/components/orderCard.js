@@ -59,11 +59,11 @@ const OrderCard = ({ order, onPress, onAccept }) => {
         )}
 
         {/* --- MODIFICATION START: Accept Button for New Orders --- */}
-        {/* {order.order_status === 1 && (
+        {order.order_status === 1 && (
           <TouchableOpacity style={styles.acceptButton} onPress={onAccept}>
             <Text style={styles.acceptButtonText}>Accept Order</Text>
           </TouchableOpacity>
-        )} */}
+        )}
         {/* --- MODIFICATION END --- */}
       </View>
     </TouchableOpacity>
