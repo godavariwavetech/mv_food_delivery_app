@@ -1,21 +1,30 @@
-import React, { useContext, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { HeaderBackButton } from '@react-navigation/elements';
+import React, {useContext, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+  RefreshControl,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {HeaderBackButton} from '@react-navigation/elements';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { AuthContext } from '../context/AuthContext';
+import {AuthContext} from '../context/AuthContext';
 import ApiService from '../services/apiservice';
 
 const AccountsScreen = () => {
-  const { user } = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   const navigation = useNavigation();
   const [adminPercentage] = React.useState(18);
   const [paymentSummary, setPaymentSummary] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
-  const adminFee = paymentSummary?.delivery_charges * 0.10 * (1 + adminPercentage/100);
+  const adminFee =
+    paymentSummary?.delivery_charges * 0.1 * (1 + adminPercentage / 100);
   const cashInHand = paymentSummary?.cod_amount;
   const onlineEarnings = paymentSummary?.delivery_charges;
   const finalPaymentAmount = onlineEarnings - cashInHand;
@@ -28,6 +37,7 @@ const AccountsScreen = () => {
       setPaymentSummary(response.data.data[0] || {});
     } catch (error) {
       console.error('Error fetching reporting history:', error);
+
       setError(true);
     } finally {
       setLoading(false);
@@ -68,22 +78,25 @@ const AccountsScreen = () => {
         </View>
       ) : error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Failed to load data. Please try again.</Text>
-          <TouchableOpacity 
+          <Text style={styles.errorText}>
+            Failed to load data. Please try again.
+          </Text>
+          <TouchableOpacity
             style={styles.retryButton}
-            onPress={fetchReportingHistory}
-          >
+            onPress={fetchReportingHistory}>
             <Text style={styles.retryText}>Retry</Text>
           </TouchableOpacity>
         </View>
       ) : !paymentSummary || Object.keys(paymentSummary).length === 0 ? (
         <View style={styles.emptyState}>
-          <MaterialCommunityIcons 
-            name="file-document-outline" 
-            size={60} 
-            color="#ddd" 
+          <MaterialCommunityIcons
+            name="file-document-outline"
+            size={60}
+            color="#ddd"
           />
-          <Text style={styles.emptyText}>No transactions found for this period</Text>
+          <Text style={styles.emptyText}>
+            No transactions found for this period
+          </Text>
         </View>
       ) : (
         <ScrollView
@@ -94,10 +107,14 @@ const AccountsScreen = () => {
               colors={['#4CAF50']}
               tintColor="#4CAF50"
             />
-          }
-        >
+          }>
+            
           <View style={styles.dateRangeContainer}>
-            <MaterialCommunityIcons name="calendar-month" size={24} color="#4CAF50" />
+            <MaterialCommunityIcons
+              name="calendar-month"
+              size={24}
+              color="#4CAF50"
+            />
             <View style={styles.dateRangeContent}>
               <Text style={styles.dateRangeLabel}>Reporting Period</Text>
               <Text style={styles.dateRangeText}>
@@ -105,6 +122,7 @@ const AccountsScreen = () => {
               </Text>
             </View>
           </View>
+          <View style={styles.cardShadow}>
 
           <View style={styles.consolidatedContainer}>
             <View style={styles.summaryHeader}>
@@ -112,11 +130,15 @@ const AccountsScreen = () => {
               <View style={styles.summaryTotal}>
                 <View style={styles.totalRow}>
                   <Text style={styles.totalLabel}>Total Orders:</Text>
-                  <Text style={styles.totalValue}>{paymentSummary?.total_orders || 0}</Text>
+                  <Text style={styles.totalValue}>
+                    {paymentSummary?.total_orders || 0}
+                  </Text>
                 </View>
                 <View style={styles.totalRow}>
                   <Text style={styles.totalLabel}>Total Amount:</Text>
-                  <Text style={styles.totalValue}>₹{paymentSummary?.total_amount || 0}</Text>
+                  <Text style={styles.totalValue}>
+                    ₹{paymentSummary?.total_amount || 0}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -128,7 +150,7 @@ const AccountsScreen = () => {
                 <Text style={styles.methodText}>Cash in Hand</Text>
                 <View style={styles.paymentDetails}>
                   <Text style={styles.detailText}>-</Text>
-                  <Text style={[styles.detailText, { color: '#262757' }]}>
+                  <Text style={[styles.detailText, { color: '#faa819' }]}>
                     ₹{paymentSummary.cod_amount}
                   </Text>
                 </View>
@@ -140,30 +162,50 @@ const AccountsScreen = () => {
                 <MaterialCommunityIcons name="cash" size={20} color="#4CAF50" />
                 <Text style={styles.methodText}>COD Orders</Text>
                 <View style={styles.paymentDetails}>
-                  <Text style={styles.detailText}>{paymentSummary.cod_count} orders</Text>
-                  <Text style={styles.detailText}>₹{paymentSummary.cod_amount}</Text>
+                  <Text style={styles.detailText}>
+                    {paymentSummary.cod_count} orders
+                  </Text>
+                  <Text style={styles.detailText}>
+                    ₹{paymentSummary.cod_amount}
+                  </Text>
                 </View>
               </View>
 
               <View style={styles.divider} />
 
               <View style={styles.paymentRow}>
-                <MaterialCommunityIcons name="credit-card" size={20} color="#2196F3" />
+                <MaterialCommunityIcons
+                  name="credit-card"
+                  size={20}
+                  color="#2196F3"
+                />
                 <Text style={styles.methodText}>Online Orders</Text>
                 <View style={styles.paymentDetails}>
-                  <Text style={styles.detailText}>{paymentSummary.pay_online_count} orders</Text>
-                  <Text style={styles.detailText}>₹{paymentSummary.pay_online_amount}</Text>
+                  <Text style={styles.detailText}>
+                    {paymentSummary.pay_online_count} orders
+                  </Text>
+                  <Text style={styles.detailText}>
+                    ₹{paymentSummary.pay_online_amount}
+                  </Text>
                 </View>
               </View>
 
               <View style={styles.divider} />
 
               <View style={styles.paymentRow}>
-                <MaterialCommunityIcons name="truck-delivery" size={20} color="#FF9800" />
+                <MaterialCommunityIcons
+                  name="truck-delivery"
+                  size={20}
+                  color="#FF9800"
+                />
                 <Text style={styles.methodText}>Delivery Charges</Text>
                 <View style={styles.paymentDetails}>
-                  <Text style={styles.detailText}>{paymentSummary.total_orders} orders</Text>
-                  <Text style={styles.detailText}>₹{paymentSummary.delivery_charges}</Text>
+                  <Text style={styles.detailText}>
+                    {paymentSummary.total_orders} orders
+                  </Text>
+                  <Text style={styles.detailText}>
+                    ₹{paymentSummary.delivery_charges}
+                  </Text>
                 </View>
               </View>
 
@@ -188,7 +230,7 @@ const AccountsScreen = () => {
                   <Text style={[styles.detailText, { color: '#999', textDecorationLine: 'line-through' }]}>
                     ₹{paymentSummary.delivery_charges}
                   </Text>
-                  <Text style={[styles.detailText, { color: '#262757', marginLeft: 8 }]}>
+                  <Text style={[styles.detailText, { color: '#faa819', marginLeft: 8 }]}>
                     ₹{(paymentSummary.delivery_charges - (0)).toFixed(2)}
                   </Text>
                 </View>
@@ -196,11 +238,17 @@ const AccountsScreen = () => {
               <View style={styles.divider} /> */}
 
               <View style={styles.paymentRow}>
-                <MaterialCommunityIcons name="wallet" size={20} color="#4CAF50" />
+                <MaterialCommunityIcons
+                  name="wallet"
+                  size={20}
+                  color="#4CAF50"
+                />
                 <Text style={styles.methodText}>Cash in Hand</Text>
                 <View style={styles.paymentDetails}>
-                  <Text style={styles.detailText}>{paymentSummary.cod_count} orders</Text>
-                  <Text style={[styles.detailText, { color: '#262757' }]}>
+                  <Text style={styles.detailText}>
+                    {paymentSummary.cod_count} orders
+                  </Text>
+                  <Text style={[styles.detailText, {color: '#faa819'}]}>
                     ₹{paymentSummary.cod_amount}
                   </Text>
                 </View>
@@ -208,17 +256,25 @@ const AccountsScreen = () => {
               <View style={styles.divider} />
 
               <View style={[styles.paymentRow, styles.finalPayment]}>
-                <Text style={[styles.methodText,{fontWeight:'bold'}]}>Net Pay</Text>
+                <Text style={[styles.methodText, {fontWeight: 'bold'}]}>
+                  Net Pay
+                </Text>
                 <View style={styles.paymentDetails}>
-                  <Text style={[styles.detailText, styles.finalAmount, 
-                    { color: finalPaymentAmount >= 0 ? '#262757' : '#dc3545' }
-                  ]}>
-                    ₹ {finalPaymentAmount >= 0 ? '+' : '-'}{Math.abs(finalPaymentAmount).toFixed(2)}
+                  <Text
+                    style={[
+                      styles.detailText,
+                      styles.finalAmount,
+                      {color: finalPaymentAmount >= 0 ? '#faa819' : '#dc3545'},
+                    ]}>
+                    ₹ {finalPaymentAmount >= 0 ? '+' : '-'}
+                    {Math.abs(finalPaymentAmount).toFixed(2)}
                   </Text>
                 </View>
               </View>
             </View>
-          </View> 
+          </View>
+          </View>
+
         </ScrollView>
       )}
       {paymentSummary && Object.keys(paymentSummary).length > 0 && (
@@ -232,7 +288,6 @@ const AccountsScreen = () => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -241,7 +296,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#262757',
+    backgroundColor: '#faa819',
     padding: 15,
     marginBottom: 10,
   },
@@ -404,12 +459,28 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 8,
   },
+  cardShadow: {
+  borderRadius: 12,
+  backgroundColor: '#fff', // required for Android shadow
+  marginHorizontal: 15,
+  marginBottom: 15,
+  // iOS shadow
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.15,
+  shadowRadius: 6,
+  // Android elevation
+  elevation: 5,
+},
   consolidatedContainer: {
     backgroundColor: 'white',
     borderRadius: 12,
-    margin: 15,
-    elevation: 2,
+  overflow: 'hidden', // ✅ hides the harsh corner shadows
+
+    
   },
+
+  
   summaryHeader: {
     padding: 16,
     borderBottomWidth: 1,
@@ -506,7 +577,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   settleButton: {
-    backgroundColor: '#262757',
+    backgroundColor: '#faa819',
     borderRadius: 8,
     padding: 16,
     alignItems: 'center',
@@ -532,7 +603,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     marginTop: 10,
     marginBottom: 15,
-    elevation: 2,
+    elevation: 4,
   },
   dateRangeContent: {
     marginLeft: 12,
@@ -585,8 +656,8 @@ const styles = StyleSheet.create({
   },
 });
 
-AccountsScreen.options = ({ navigation }) => ({
-  headerLeft: (props) => (
+AccountsScreen.options = ({navigation}) => ({
+  headerLeft: props => (
     <HeaderBackButton
       {...props}
       onPress={() => navigation.goBack()}
@@ -595,4 +666,4 @@ AccountsScreen.options = ({ navigation }) => ({
   ),
 });
 
-export default AccountsScreen; 
+export default AccountsScreen;

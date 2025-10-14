@@ -77,7 +77,9 @@ const CompletedOrdersScreen = ({ navigation }) => {
   const [completedOrders, setCompletedOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [driverLocation, setDriverLocation] = useState({ latitude: null, longitude: null });
-  
+
+
+
 
   const fetchCompletedOrders = async () => {
     setLoading(true);
@@ -92,7 +94,6 @@ const CompletedOrdersScreen = ({ navigation }) => {
     try {
       console.log({f_date: startDate, t_date: endDate, emp_id: user.id})
       const response = await ApiService.completedorders({ f_date: startDate, t_date: endDate, emp_id: user.id });
-      console.log(response,">>>>>>>>>>>>>>>>>>>>Response<><><>>>>>>>>>>>>>>>>>completed");
       if (response.status === 200) {
         console.log("7777", response.data)
         setCompletedOrders(response.data.data);

@@ -31,7 +31,7 @@ const {width} = Dimensions.get('window');
 // --- UI Theme & Colors ---
 const theme = {
   colors: {
-    primary: '#262757', // Gold
+    primary: '#faa819', // Gold
     background: '#F8F9FA',
     card: '#FFFFFF',
     textPrimary: '#2C3E50', // Dark Slate Blue
@@ -71,22 +71,28 @@ const OrderTrackingScreen = ({route}) => {
   const [orderItems, setOrderItems] = useState(null);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '']);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
   const otpInputs = useRef([]);
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
-
-  console.log(orderDetails,">>>>>>>>>>>>>>>>>>>VVVV");
+  console.log(orderDetails, '>>>>>>>>>>>>>>>>>>>VVVV');
 
   const fetchOrders = async () => {
     try {
-      const response = await ApiService.getOrderDetails(orderDetails.id||orderDetails.order_id);
+      const response = await ApiService.getOrderDetails(
+        orderDetails.id || orderDetails.order_id,
+      );
       if (response?.status === 200) {
         setOrderItems(response.data);
       } else {
-        Alert.alert('Error', response?.message || 'Failed to load order items.');
+        Alert.alert(
+          'Error',
+          response?.message || 'Failed to load order items.',
+        );
       }
     } catch (error) {
       Alert.alert('Error', error.message || 'Something went wrong.');
@@ -124,43 +130,40 @@ const OrderTrackingScreen = ({route}) => {
       Alert.alert('Error', 'The entered OTP is incorrect.');
     }
   };
-  
-  const accepteSubmmited = async () => {
-    Alert.alert(
-      'Confirm Acceptance',
-      'Are you sure you want to accept this order?',
-      [
-        {text: 'Cancel', style: 'cancel'},
-        {
-          text: 'Confirm',
-          onPress: async () => {
-            const payload = {
-              deliveryarr: [user],
-              id: user.id,
-              order_status: 8,
-              order_id: orderDetails.order_id,
-              // customer_id:orderDetails?.customer_id
-            };
-            try {
-              const response = await ApiService.acceptorders(payload);
-              if (response?.status === 200) {
-                setOrderStatus(8);
-                route.params.handleAccept(orderDetails.order_id);
-                Alert.alert('Success', 'Order accepted successfully.');
-              } else {
-                Alert.alert('Error', response?.message || 'Failed to accept order.');
-              }
-            } catch (error) {
-              Alert.alert('Error', error.message || 'Something went wrong.');
-            }
-          },
-        },
-      ],
-    );
+
+  const accepteSubmmited = () => {
+    setShowConfirmModal(true);
+  };
+
+  const confirmAcceptOrder = async () => {
+    const payload = {
+      deliveryarr: [user],
+      id: user.id,
+      order_status: 8,
+      order_id: orderDetails.order_id,
+    };
+
+    try {
+      const response = await ApiService.acceptorders(payload);
+      if (response?.status === 200) {
+        setOrderStatus(8);
+        route.params.handleAccept(orderDetails.order_id);
+        Alert.alert('Success', 'Order accepted successfully.');
+      } else {
+        Alert.alert('Error', response?.message || 'Failed to accept order.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message || 'Something went wrong.');
+    } finally {
+      setShowConfirmModal(false);
+    }
   };
 
   const submitVendorReceived = async () => {
-    const payload = {id: orderDetails.order_id,customer_id:orderDetails?.customer_id};
+    const payload = {
+      id: orderDetails.order_id,
+      customer_id: orderDetails?.customer_id,
+    };
     try {
       const response = await ApiService.vendorReceived(payload);
       if (response?.status === 200) {
@@ -179,7 +182,7 @@ const OrderTrackingScreen = ({route}) => {
       order_id: orderDetails.order_id,
       delivery_id: user.id,
       delivery_otp: otp.join(''),
-      customer_id:orderDetails?.customer_id
+      customer_id: orderDetails?.customer_id,
     };
     try {
       const response = await ApiService.completedorder(payload);
@@ -202,12 +205,12 @@ const OrderTrackingScreen = ({route}) => {
 
   const handlePickup = () => {
     Alert.alert(
-      "Confirm Pickup",
-      "Are you sure you have picked up the order from the vendor?",
+      'Confirm Pickup',
+      'Are you sure you have picked up the order from the vendor?',
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", onPress: submitVendorReceived },
-      ]
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'Confirm', onPress: submitVendorReceived},
+      ],
     );
   };
 
@@ -215,7 +218,11 @@ const OrderTrackingScreen = ({route}) => {
   const InfoCard = ({title, icon, children}) => (
     <View style={styles.infoCard}>
       <View style={styles.cardHeader}>
-        <Icon name={icon} size={moderateScale(20)} color={theme.colors.primary} />
+        <Icon
+          name={icon}
+          size={moderateScale(20)}
+          color={theme.colors.primary}
+        />
         <Text style={styles.cardTitle}>{title}</Text>
       </View>
       <View style={styles.cardContent}>{children}</View>
@@ -227,76 +234,132 @@ const OrderTrackingScreen = ({route}) => {
       style={styles.detailRow}
       onPress={onCall || onMap}
       disabled={!onCall && !onMap}>
-      <Icon name={icon} size={moderateScale(18)} color={theme.colors.textSecondary} style={styles.detailIcon} />
+      <Icon
+        name={icon}
+        size={moderateScale(18)}
+        color={theme.colors.textSecondary}
+        style={styles.detailIcon}
+      />
       <View style={{flex: 1}}>
         <Text style={styles.detailLabel}>{label}</Text>
         <Text style={styles.detailValue}>{value}</Text>
         {mapHint && (
-            <Text style={styles.mapIndicationText}>(Tap to navigate)</Text>
+          <Text style={styles.mapIndicationText}>(Tap to navigate)</Text>
         )}
       </View>
       {(onCall || onMap) && (
-        <Icon name="chevron-forward-outline" size={moderateScale(18)} color={theme.colors.primary} />
+        <Icon
+          name="chevron-forward-outline"
+          size={moderateScale(18)}
+          color={theme.colors.primary}
+        />
       )}
     </TouchableOpacity>
   );
-  
+
   const ProgressTracker = () => {
-    const isAccepted = orderStatus === 8 || orderStatus === 2 || orderStatus === 3;
+    const isAccepted =
+      orderStatus === 8 || orderStatus === 2 || orderStatus === 3;
     const isDelivered = orderStatus === 3;
-  
+
     return (
+
       <View style={styles.progressContainer}>
         <View style={styles.progressStep}>
-          <Icon name="checkmark-circle" size={24} color={theme.colors.primary} />
-          <Text style={[styles.progressLabel, {color: theme.colors.primary}]}>New Order</Text>
+          <Icon
+            name="checkmark-circle"
+            size={24}
+            color={theme.colors.primary}
+          />
+          <Text style={[styles.progressLabel, {color: theme.colors.primary}]}>
+            New Order
+          </Text>
         </View>
-        <View style={[styles.progressLine, isAccepted && styles.progressLineActive]} />
+        <View
+          style={[styles.progressLine, isAccepted && styles.progressLineActive]}
+        />
         <View style={styles.progressStep}>
-          <Icon name="bicycle" size={24} color={isAccepted ? theme.colors.primary : theme.colors.border} />
-          <Text style={[styles.progressLabel, isAccepted && {color: theme.colors.primary}]}>Accepted</Text>
+          <Icon
+            name="bicycle"
+            size={24}
+            color={isAccepted ? theme.colors.primary : theme.colors.border}
+          />
+          <Text
+            style={[
+              styles.progressLabel,
+              isAccepted && {color: theme.colors.primary},
+            ]}>
+            Accepted
+          </Text>
         </View>
-        <View style={[styles.progressLine, isDelivered && styles.progressLineActive]} />
+        <View
+          style={[
+            styles.progressLine,
+            isDelivered && styles.progressLineActive,
+          ]}
+        />
         <View style={styles.progressStep}>
-          <Icon name="location-sharp" size={24} color={isDelivered ? theme.colors.primary : theme.colors.border} />
-          <Text style={[styles.progressLabel, isDelivered && {color: theme.colors.primary}]}>Delivered</Text>
+          <Icon
+            name="location-sharp"
+            size={24}
+            color={isDelivered ? theme.colors.primary : theme.colors.border}
+          />
+          <Text
+            style={[
+              styles.progressLabel,
+              isDelivered && {color: theme.colors.primary},
+            ]}>
+            Delivered
+          </Text>
         </View>
       </View>
     );
   };
-  
+
   const getAction = () => {
     switch (orderStatus) {
       case 1:
         return (
-          <TouchableOpacity style={[styles.actionButton, styles.acceptButton]} onPress={accepteSubmmited}>
+          <TouchableOpacity
+            style={[styles.actionButton, styles.acceptButton]}
+            onPress={accepteSubmmited}>
             <Text style={styles.actionButtonText}>Accept Order</Text>
           </TouchableOpacity>
         );
       case 8:
         return (
-          <TouchableOpacity style={[styles.actionButton, styles.vendorButton]} onPress={handlePickup}>
+          <TouchableOpacity
+            style={[styles.actionButton, styles.vendorButton]}
+            onPress={handlePickup}>
             <Text style={styles.actionButtonText}>Pickup Order</Text>
           </TouchableOpacity>
         );
       case 2:
         return (
-          <TouchableOpacity style={[styles.actionButton, styles.completeButton]} onPress={handleCompletePress}>
+          <TouchableOpacity
+            style={[styles.actionButton, styles.completeButton]}
+            onPress={handleCompletePress}>
             <Text style={styles.actionButtonText}>Deliver Order</Text>
           </TouchableOpacity>
         );
       case 3:
-          return (
-            <View style={[styles.actionButton, styles.successMessage]}>
-                <Icon name="checkmark-circle-outline" size={20} color={theme.colors.success} />
-                <Text style={styles.successMessageText}>Order Completed Successfully</Text>
-            </View>
-          );
+        return (
+          <View style={[styles.actionButton, styles.successMessage]}>
+            <Icon
+              name="checkmark-circle-outline"
+              size={20}
+              color={theme.colors.success}
+            />
+            <Text style={styles.successMessageText}>
+              Order Completed Successfully
+            </Text>
+          </View>
+        );
       default:
         return null;
     }
   };
-  
+
   if (!orderDetails) {
     return (
       <View style={styles.container}>
@@ -308,7 +371,10 @@ const OrderTrackingScreen = ({route}) => {
   // --- Render ---
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={theme.colors.primary} />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={theme.colors.primary}
+      />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} color="#fff" />
@@ -324,7 +390,7 @@ const OrderTrackingScreen = ({route}) => {
             {formatDate(orderDetails?.order_date)} at {orderDetails?.order_time}
           </Text>
         </View>
-        
+
         <ProgressTracker />
 
         {/* --- Payment & Earnings Card --- */}
@@ -332,7 +398,9 @@ const OrderTrackingScreen = ({route}) => {
           {/* MODIFICATION START: Added "&& orderStatus !== 3" to hide on completed orders */}
           {orderDetails.payment_type === 'COD' && orderStatus !== 3 && (
             <View style={styles.highlightedEarning}>
-              <Text style={styles.highlightedEarningLabel}>Amount to Collect</Text>
+              <Text style={styles.highlightedEarningLabel}>
+                Amount to Collect
+              </Text>
               <Text style={styles.highlightedEarningValue}>
                 ₹{orderDetails.grand_total || orderDetails.total_amount}
               </Text>
@@ -343,7 +411,7 @@ const OrderTrackingScreen = ({route}) => {
           <DetailRow
             icon="card-outline"
             label="Payment Mode"
-            value={orderDetails.payment_type || "N/A"}
+            value={orderDetails.payment_type || 'N/A'}
           />
           <DetailRow
             icon="cash-outline"
@@ -372,7 +440,9 @@ const OrderTrackingScreen = ({route}) => {
                 icon="call-outline"
                 label="Phone"
                 value={orderDetails.customer_mobile_number}
-                onCall={() => makePhoneCall(orderDetails.customer_mobile_number)}
+                onCall={() =>
+                  makePhoneCall(orderDetails.customer_mobile_number)
+                }
               />
               <DetailRow
                 icon="map-outline"
@@ -426,22 +496,21 @@ const OrderTrackingScreen = ({route}) => {
 
         {/* --- Order Items --- */}
         <InfoCard title="Order Items" icon="fast-food-outline">
-            {orderItems?.orderitemdata.map((item, index) => (
-              <View key={index} style={styles.itemRow}>
-                <Image source={{uri: item.item_image}} style={styles.itemImage} />
-                <View style={styles.itemDetails}>
-                  <Text style={styles.itemName}>{item.item_name}</Text>
-                  <Text style={styles.itemQty}>Quantity: {item.sub_item_count}</Text>
-                </View>
+          {orderItems?.orderitemdata.map((item, index) => (
+            <View key={index} style={styles.itemRow}>
+              <Image source={{uri: item.item_image}} style={styles.itemImage} />
+              <View style={styles.itemDetails}>
+                <Text style={styles.itemName}>{item.item_name}</Text>
+                <Text style={styles.itemQty}>
+                  Quantity: {item.sub_item_count}
+                </Text>
               </View>
-            ))}
+            </View>
+          ))}
         </InfoCard>
-
       </ScrollView>
-      
-      <View style={styles.footer}>
-        {getAction()}
-      </View>
+
+      <View style={styles.footer}>{getAction()}</View>
 
       {/* --- OTP Modal --- */}
       <Modal visible={showOtpModal} transparent animationType="fade">
@@ -451,7 +520,8 @@ const OrderTrackingScreen = ({route}) => {
               <View style={styles.modalContent}>
                 <Text style={styles.modalTitle}>Enter OTP</Text>
                 <Text style={styles.modalSubtitle}>
-                  Please enter the OTP from the customer to complete the delivery.
+                  Please enter the OTP from the customer to complete the
+                  delivery.
                 </Text>
                 <View style={styles.otpContainer}>
                   {otp.map((digit, index) => (
@@ -464,14 +534,20 @@ const OrderTrackingScreen = ({route}) => {
                       keyboardType="numeric"
                       ref={ref => (otpInputs.current[index] = ref)}
                       onKeyPress={({nativeEvent}) => {
-                        if (nativeEvent.key === 'Backspace' && !digit && index > 0) {
+                        if (
+                          nativeEvent.key === 'Backspace' &&
+                          !digit &&
+                          index > 0
+                        ) {
                           otpInputs.current[index - 1].focus();
                         }
                       }}
                     />
                   ))}
                 </View>
-                <TouchableOpacity onPress={handleOtpSubmit} style={styles.modalButton}>
+                <TouchableOpacity
+                  onPress={handleOtpSubmit}
+                  style={styles.modalButton}>
                   <Text style={styles.modalButtonText}>Submit</Text>
                 </TouchableOpacity>
               </View>
@@ -480,6 +556,33 @@ const OrderTrackingScreen = ({route}) => {
         </TouchableWithoutFeedback>
       </Modal>
 
+      {/* --- Confirmation Modal --- */}
+      <Modal
+        visible={showConfirmModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowConfirmModal(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitle2}>Accept this order?</Text>
+            <Text style={styles.modalMessage}>
+              Once accepted, this order will be assigned to you.
+            </Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalBtn, styles.cancelBtn]}
+                onPress={() => setShowConfirmModal(false)}>
+                <Text style={styles.cancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalBtn, styles.confirmBtn]}
+                onPress={confirmAcceptOrder}>
+                <Text style={styles.confirmText}>Yes, Accept</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -502,7 +605,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: theme.spacing.m,
-    paddingBottom: hp(12)
+    paddingBottom: hp(12),
   },
   orderHeader: {
     marginBottom: theme.spacing.m,
@@ -588,20 +691,21 @@ const styles = StyleSheet.create({
     color: theme.colors.textPrimary,
     marginTop: 4,
   },
-  progressContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: theme.spacing.m,
-    backgroundColor: theme.colors.card,
-    borderRadius: 12,
-    marginBottom: theme.spacing.m,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 3,
-  },
+progressContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: theme.spacing.m,
+  backgroundColor: '#fff', 
+  borderRadius: 12,
+  marginBottom: theme.spacing.m,
+  elevation: 6,
+
+
+},
+
+  
+
   progressStep: {
     alignItems: 'center',
     flex: 1,
@@ -731,6 +835,63 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: theme.typography.body,
     fontWeight: 'bold',
+  },
+
+  // --- Confirmation Modal Styles ---
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalBox: {
+    backgroundColor: '#fff',
+    width: '80%',
+    borderRadius: 12,
+    padding: 25,
+    elevation: 6,
+    alignItems: 'center',
+  },
+  modalTitle2: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  modalMessage: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 25,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  modalBtn: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginHorizontal: 8,
+    minWidth: 100,
+    alignItems: 'center',
+  },
+  cancelBtn: {
+    backgroundColor: '#eee',
+  },
+  confirmBtn: {
+    backgroundColor: '#27ae60',
+  },
+  cancelText: {
+    color: '#333',
+    fontWeight: '600',
+  },
+  confirmText: {
+    color: '#fff',
+    fontWeight: '600',
   },
 });
 
