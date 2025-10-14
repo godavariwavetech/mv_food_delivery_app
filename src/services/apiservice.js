@@ -3,7 +3,7 @@ import {Alert} from 'react-native';
 
 // Base API URL
 
-const API_BASE_URL ='https://melocalapp.com:2630/delivery_boy'
+const API_BASE_URL ='https://yoloo.shop:2040/delivery_boy'
 
 // Create Axios instance
 const apiClient = axios.create({
@@ -64,6 +64,7 @@ const ApiService = {
 
       return response.data;
     } catch (error) {
+      console.log(error,">>>>>>>>>>ERROR");
       throw handleApiError(error);
     }
   },

@@ -165,7 +165,7 @@ const LoginScreen = ({ navigation }) => {
           <Icon
             name={isAgreed ? 'checkbox-marked' : 'checkbox-blank-outline'}
             size={24}
-            color={isAgreed ? '#faa819' : 'gray'}
+            color={isAgreed ? '#262757' : 'gray'}
           />
         </TouchableOpacity>
         <Text style={styles.agreementText}>
@@ -189,7 +189,7 @@ const LoginScreen = ({ navigation }) => {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
-        <Text style={{ color: '#faa819', marginTop: verticalScale(20) }}>
+        <Text style={{ color: '#262757', marginTop: verticalScale(20) }}>
           Don't have an account? Register
         </Text>
       </TouchableOpacity>
@@ -221,9 +221,10 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 200,
-    height: 200,
+    height: 150,
     marginBottom: verticalScale(20),
     borderRadius: 10,
+    tintColor:"#262757"
   },
   inputContainer: {
     width: '100%',
@@ -256,7 +257,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     width: '100%',
-    backgroundColor: '#faa819',
+    backgroundColor: '#262757',
     paddingVertical: verticalScale(12),
     borderRadius: moderateScale(10),
     alignItems: 'center',
@@ -286,7 +287,7 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(15),
   },
   forgotPasswordText: {
-    color: '#faa819',
+    color: '#262757',
     fontSize: scale(12),
   },
   agreementContainer: {
@@ -304,7 +305,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   linkText: {
-    color: '#faa819',
+    color: '#262757',
     fontWeight: 'bold',
     textDecorationLine: 'underline',
   },

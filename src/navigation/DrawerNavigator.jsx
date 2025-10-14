@@ -32,7 +32,7 @@ const ProfileStack = () => {
 
 const DrawerNavigator = () => {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#faa819" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#262757" }}>
       <Drawer.Navigator
         initialRouteName="Home"
         screenOptions={{
@@ -40,7 +40,7 @@ const DrawerNavigator = () => {
             backgroundColor: '#FFFFFF', // White background
           },
           headerShown: false,
-          drawerActiveBackgroundColor: "#faa819", // Light Lime #faa819
+          drawerActiveBackgroundColor: "#262757", // Light Lime #262757
           drawerActiveTintColor: "#FFFFFF", // White text/icons for active item
           drawerInactiveTintColor: "#333333", // Dark gray for inactive text/icons
           drawerLabelStyle: { fontSize: 16, fontWeight: 'bold' },

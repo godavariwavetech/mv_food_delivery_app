@@ -78,9 +78,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.melocaldriver"
+    namespace "com.yoloodelivery"
     defaultConfig {
-        applicationId "com.melocaldriver"
+        applicationId "com.yoloodelivery"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 4

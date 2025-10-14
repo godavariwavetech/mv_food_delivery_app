@@ -97,7 +97,7 @@ const PaymentsScreen = () => {
         </TouchableOpacity>
 
         {loading ? (
-          <ActivityIndicator size="large" color="#faa819" style={{ marginTop: 20 }} />
+          <ActivityIndicator size="large" color="#262757" style={{ marginTop: 20 }} />
         ) : payments.length === 0 ? (
           <Text style={styles.noPaymentsText}>No Payments Found</Text>
         ) : (
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#faa819',
+    backgroundColor: '#262757',
     padding: 15,
   },
   headerText: {
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   searchButton: {
-    backgroundColor: '#faa819',
+    backgroundColor: '#262757',
     paddingVertical: 12,
     alignItems: 'center',
     borderRadius: 5,

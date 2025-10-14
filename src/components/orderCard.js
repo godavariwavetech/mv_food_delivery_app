@@ -38,7 +38,7 @@ const OrderCard = ({ order, onPress, onAccept }) => {
             <Text style={styles.infoText} numberOfLines={1}>{order.shop_name}</Text>
           </View>
           <View style={styles.infoRow}>
-            <FontAwesome5 name="location-arrow" size={15} color="#faa819" />
+            <FontAwesome5 name="location-arrow" size={15} color="#262757" />
             <Text style={styles.infoText} numberOfLines={2}>
               {order.delivery_address}
             </Text>

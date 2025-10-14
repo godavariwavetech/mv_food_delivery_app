@@ -232,7 +232,7 @@ const OrdersScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar backgroundColor="#faa819" barStyle="light-content" />
+      <StatusBar backgroundColor="#262757" barStyle="light-content" />
       <View style={styles.header}>
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: verticalScale(15),
     paddingHorizontal: wp(3),
-    backgroundColor: '#faa819',
+    backgroundColor: '#262757',
   },
   headerTitle: {
     fontSize: scale(18),
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(6),
   },
   activeTab: {
-    backgroundColor: '#faa819',
+    backgroundColor: '#262757',
   },
   tabText: {
     fontSize: scale(14),

@@ -312,7 +312,7 @@ const Registration = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor="#faa819" />
+      <StatusBar barStyle="light-content" backgroundColor="#262757" />
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => { navigation.goBack() }}>
           <Icon name="arrow-back" size={24} color="#fff" />
@@ -697,7 +697,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#faa819',
+    backgroundColor: '#262757',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
     elevation: 2,
@@ -818,7 +818,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     // backgroundColor: '#007AFF',
-    backgroundColor: '#faa819',
+    backgroundColor: '#262757',
     padding: 12,
     borderRadius: 12,
     marginTop: 20,

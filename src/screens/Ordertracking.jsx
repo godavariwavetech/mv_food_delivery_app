@@ -31,7 +31,7 @@ const {width} = Dimensions.get('window');
 // --- UI Theme & Colors ---
 const theme = {
   colors: {
-    primary: '#faa819', // Gold
+    primary: '#262757', // Gold
     background: '#F8F9FA',
     card: '#FFFFFF',
     textPrimary: '#2C3E50', // Dark Slate Blue

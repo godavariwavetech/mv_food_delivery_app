@@ -128,7 +128,7 @@ const AccountsScreen = () => {
                 <Text style={styles.methodText}>Cash in Hand</Text>
                 <View style={styles.paymentDetails}>
                   <Text style={styles.detailText}>-</Text>
-                  <Text style={[styles.detailText, { color: '#faa819' }]}>
+                  <Text style={[styles.detailText, { color: '#262757' }]}>
                     ₹{paymentSummary.cod_amount}
                   </Text>
                 </View>
@@ -188,7 +188,7 @@ const AccountsScreen = () => {
                   <Text style={[styles.detailText, { color: '#999', textDecorationLine: 'line-through' }]}>
                     ₹{paymentSummary.delivery_charges}
                   </Text>
-                  <Text style={[styles.detailText, { color: '#faa819', marginLeft: 8 }]}>
+                  <Text style={[styles.detailText, { color: '#262757', marginLeft: 8 }]}>
                     ₹{(paymentSummary.delivery_charges - (0)).toFixed(2)}
                   </Text>
                 </View>
@@ -200,7 +200,7 @@ const AccountsScreen = () => {
                 <Text style={styles.methodText}>Cash in Hand</Text>
                 <View style={styles.paymentDetails}>
                   <Text style={styles.detailText}>{paymentSummary.cod_count} orders</Text>
-                  <Text style={[styles.detailText, { color: '#faa819' }]}>
+                  <Text style={[styles.detailText, { color: '#262757' }]}>
                     ₹{paymentSummary.cod_amount}
                   </Text>
                 </View>
@@ -211,7 +211,7 @@ const AccountsScreen = () => {
                 <Text style={[styles.methodText,{fontWeight:'bold'}]}>Net Pay</Text>
                 <View style={styles.paymentDetails}>
                   <Text style={[styles.detailText, styles.finalAmount, 
-                    { color: finalPaymentAmount >= 0 ? '#faa819' : '#dc3545' }
+                    { color: finalPaymentAmount >= 0 ? '#262757' : '#dc3545' }
                   ]}>
                     ₹ {finalPaymentAmount >= 0 ? '+' : '-'}{Math.abs(finalPaymentAmount).toFixed(2)}
                   </Text>
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#faa819',
+    backgroundColor: '#262757',
     padding: 15,
     marginBottom: 10,
   },
@@ -506,7 +506,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   settleButton: {
-    backgroundColor: '#faa819',
+    backgroundColor: '#262757',
     borderRadius: 8,
     padding: 16,
     alignItems: 'center',

@@ -1,4 +1,4 @@
-package com.melocaldriver
+package com.yoloodelivery
 
 import android.app.Application
 import com.facebook.react.PackageList
