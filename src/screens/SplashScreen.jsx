@@ -28,14 +28,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff", // #262757 shade (Adjust as needed)
+    backgroundColor: "#fff", 
   },
   logo: {
     width: 250,
-    height: 150,
-    resizeMode: "stretch",
+    height: 300,
+    resizeMode: "contain",
     borderRadius: 10,
-    tintColor:"#262757"
   },
   appName: {
     fontSize: 24,

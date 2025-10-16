@@ -25,13 +25,14 @@ import {
 import {moderateScale} from 'react-native-size-matters';
 import ApiService from '../services/apiservice';
 import {AuthContext} from '../context/AuthContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const {width} = Dimensions.get('window');
 
 // --- UI Theme & Colors ---
 const theme = {
   colors: {
-    primary: '#faa819', // Gold
+    primary: '#08B341', // Gold
     background: '#F8F9FA',
     card: '#FFFFFF',
     textPrimary: '#2C3E50', // Dark Slate Blue
@@ -74,6 +75,8 @@ const OrderTrackingScreen = ({route}) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const otpInputs = useRef([]);
+
+  const insets = useSafeAreaInsets()
 
   useEffect(() => {
     fetchOrders();
@@ -510,7 +513,7 @@ const OrderTrackingScreen = ({route}) => {
         </InfoCard>
       </ScrollView>
 
-      <View style={styles.footer}>{getAction()}</View>
+      <View style={[styles.footer,{bottom:insets.bottom}]}>{getAction()}</View>
 
       {/* --- OTP Modal --- */}
       <Modal visible={showOtpModal} transparent animationType="fade">

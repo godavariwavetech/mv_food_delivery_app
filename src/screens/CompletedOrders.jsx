@@ -240,7 +240,7 @@ const CompletedOrdersScreen = ({ navigation }) => {
         </View>
 
         {loading ? (
-          <ActivityIndicator size="large" color="#262757" />
+          <ActivityIndicator size="large" color="#08B341" />
         ) : completedOrders.length === 0 ? (
           <Text style={styles.noOrdersText}>No orders found</Text>
         ) : (
@@ -284,7 +284,7 @@ const CompletedOrdersScreen = ({ navigation }) => {
                     </View>
                     <View style={styles.priceContainer}>
                       <Text style={[styles.status,{color:'#000',fontWeight:'400'}]}>Order ID: {item.order_ids}</Text>
-                      <Text style={styles.price}>₹{item?.total_amount}</Text>
+                      <Text style={styles.price}>₹{item?.grand_total}</Text>
                     </View>
                   </View>
 
@@ -293,12 +293,12 @@ const CompletedOrdersScreen = ({ navigation }) => {
                   <View style={styles.column}>
                     <View style={styles.row}>
                       <Ionicons name="location-outline" size={wp(6)} color="green" />
-                      <Ionicons name="location-outline" size={wp(6)} color="#262757" />
+                      <Ionicons name="location-outline" size={wp(6)} color="#08B341" />
                       <Text style={styles.location}>{item.shop_name}</Text>
                     </View>
                     <View style={styles.row}>
                       <Icon name="location-arrow" size={wp(5)} color="green" />
-                      <Icon name="location-arrow" size={wp(5)} color="#262757" />
+                      <Icon name="location-arrow" size={wp(5)} color="#08B341" />
                       <Text style={styles.location}>{item.delivery_address}</Text>
                     </View>
                   </View>
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: hp(2),
     elevation: 4,
-    backgroundColor: "#262757"
+    backgroundColor: "#08B341"
   },
   headerTitle: {
     fontSize: wp(5),
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "green",
-    color: "#262757",
+    color: "#08B341",
   },
   separator: {
     height: 1,
@@ -446,7 +446,7 @@ const styles = StyleSheet.create({
   },
   searchButton: {
     backgroundColor: '#28a745',
-    backgroundColor: '#262757',
+    backgroundColor: '#08B341',
     paddingVertical: 12,
     alignItems: 'center',
     borderRadius: 5,

@@ -3,7 +3,7 @@ import {Alert} from 'react-native';
 
 // Base API URL
 
-const API_BASE_URL ='https://yoloo.shop:2040/delivery_boy'
+const API_BASE_URL ='https://varadhifood.com:2636/delivery_boy'
 
 // Create Axios instance
 const apiClient = axios.create({
@@ -16,7 +16,7 @@ const apiClient = axios.create({
 
 // Create Axios instance
 const publicapiClient = axios.create({
-  baseURL: 'https://melocalapp.com:2630/public_app',
+  baseURL: 'https://varadhifood.com:2636/public_app',
   timeout: 10000, // 10 seconds timeout
   headers: {
     'Content-Type': 'application/json',

@@ -1,4 +1,4 @@
-package com.yoloodelivery
+package com.varadhipartner
 
 import android.app.Application
 import com.facebook.react.PackageList

@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     width: '100%',
-    backgroundColor: '#262757',
+    backgroundColor: '#08B341',
     paddingVertical: verticalScale(12),
     borderRadius: moderateScale(10),
     alignItems: 'center',

@@ -6,8 +6,13 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
+  Dimensions,
   ActivityIndicator,
-  StatusBar,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+   StatusBar,
 } from 'react-native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import ApiService from '../services/apiservice';
@@ -80,8 +85,8 @@ const LoginScreen = ({ navigation }) => {
       setLoading(true);
       try {
         const response = await ApiService.login(mobileNumber, password);
-        console.log(response, 'loginRes')
         if (response.status === 200 && response.data.length > 0) {
+          console.log('Login Success:', response);
           login(response.data[0]);
           navigation.replace('MainApp');
         } else if (response.status === 300) {
@@ -104,41 +109,52 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          bounces={false}
+        >
+          <View style={styles.container}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
-      <Image
+            <Image
         source={require('../assets/foodtrail_delivery.png')}
-        style={styles.logo}
-        resizeMode="contain"
-      />
+              style={styles.logo}
+              resizeMode="contain"
+            />
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={[styles.input, errors.mobileNumber && touched.mobileNumber && styles.inputError]}
-          placeholder="Mobile Number"
-          placeholderTextColor="gray"
-          keyboardType="phone-pad"
-          value={mobileNumber}
-          maxLength={10}
-          onChangeText={handleMobileChange}
-          onBlur={() => handleBlur('mobileNumber')}
-        />
-        {touched.mobileNumber && errors.mobileNumber ? <Text style={styles.errorText}>{errors.mobileNumber}</Text> : null}
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={[styles.input, errors.mobileNumber && touched.mobileNumber && styles.inputError]}
+                placeholder="Mobile Number"
+                placeholderTextColor="gray"
+                keyboardType="phone-pad"
+                value={mobileNumber}
+                maxLength={10}
+                onChangeText={handleMobileChange}
+                onBlur={() => handleBlur('mobileNumber')}
+              />
+              {touched.mobileNumber && errors.mobileNumber ? <Text style={styles.errorText}>{errors.mobileNumber}</Text> : null}
 
         <View style={styles.passwordContainer}>
-          <TextInput
+              <TextInput
             style={[
               styles.input2,
               { flex: 1 },
               errors.password && touched.password && styles.inputError
             ]}
-            placeholder="Password"
-            placeholderTextColor="gray"
+                placeholder="Password"
+                placeholderTextColor="gray"
             secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={handlePasswordChange}
-            onBlur={() => handleBlur('password')}
-          />
+                value={password}
+                onChangeText={handlePasswordChange}
+                onBlur={() => handleBlur('password')}
+              />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Icon
               name={showPassword ? 'eye-off' : 'eye'}
@@ -165,7 +181,7 @@ const LoginScreen = ({ navigation }) => {
           <Icon
             name={isAgreed ? 'checkbox-marked' : 'checkbox-blank-outline'}
             size={24}
-            color={isAgreed ? '#262757' : 'gray'}
+            color={isAgreed ? '#08B341' : 'gray'}
           />
         </TouchableOpacity>
         <Text style={styles.agreementText}>
@@ -174,22 +190,22 @@ const LoginScreen = ({ navigation }) => {
             Terms & Conditions
           </Text>
         </Text>
-      </View>
+            </View>
 
-      <TouchableOpacity
-        style={[styles.loginButton, !isButtonEnabled && styles.disabledButton]}
-        onPress={handleLogin}
-        disabled={!isButtonEnabled || loading}
-      >
-        {loading ? (
-          <ActivityIndicator size="small" color="#fff" />
-        ) : (
-          <Text style={styles.loginText}>Log In</Text>
-        )}
-      </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.loginButton, !isButtonEnabled && styles.disabledButton]}
+              onPress={handleLogin}
+              disabled={!isButtonEnabled || loading}
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.loginText}>Log In</Text>
+              )}
+            </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
-        <Text style={{ color: '#262757', marginTop: verticalScale(20) }}>
+        <Text style={{ color: '#08B341', marginTop: verticalScale(20) }}>
           Don't have an account? Register
         </Text>
       </TouchableOpacity>
@@ -206,11 +222,13 @@ const LoginScreen = ({ navigation }) => {
         onClose={() => setIsModalVisible(false)} 
       />
 
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 };
 
-// --- 3. Styles for Login Screen remain (modal styles are removed) ---
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -224,7 +242,6 @@ const styles = StyleSheet.create({
     height: 150,
     marginBottom: verticalScale(20),
     borderRadius: 10,
-    tintColor:"#262757"
   },
   inputContainer: {
     width: '100%',
@@ -257,7 +274,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     width: '100%',
-    backgroundColor: '#262757',
+    backgroundColor: '#08B341',
     paddingVertical: verticalScale(12),
     borderRadius: moderateScale(10),
     alignItems: 'center',
@@ -287,7 +304,7 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(15),
   },
   forgotPasswordText: {
-    color: '#262757',
+    color: '#08B341',
     fontSize: scale(12),
   },
   agreementContainer: {
@@ -305,7 +322,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   linkText: {
-    color: '#262757',
+    color: '#08B341',
     fontWeight: 'bold',
     textDecorationLine: 'underline',
   },

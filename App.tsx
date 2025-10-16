@@ -3,8 +3,9 @@ import React, { useEffect, useRef } from 'react';
 import AppNavigator from './src/navigation/AppNavigator';
 import { useColorScheme } from 'react-native';
 import VersionCheck from 'react-native-version-check';
-import { getFCMToken, requestNotificationPermission } from './src/NotificationService';
+import {  getFCMToken, requestNotificationPermission } from './src/NotificationService';
 import { AuthProvider } from './src/context/AuthContext';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const App = () => {
   const theme = useColorScheme();
@@ -43,7 +44,7 @@ const App = () => {
   
     const handleNotificationRequest = async () => {
       await requestNotificationPermission();
-      checkForUpdate(); // Check for app updates
+      checkForUpdate();
       getFCMToken()
     };
 
@@ -66,11 +67,13 @@ const App = () => {
   }, []);
 
   return (
+    <SafeAreaProvider>
     <SafeAreaView style={{ flex: 1 }}>
       <AuthProvider>
         <AppNavigator />
       </AuthProvider>
     </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 

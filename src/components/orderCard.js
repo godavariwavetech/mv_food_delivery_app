@@ -1,11 +1,13 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState }  from 'react';
+import { View, Text, StyleSheet, TouchableOpacity ,Modal } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Separator from './Separator';
 
 // The component now accepts onPress and onAccept props
 const OrderCard = ({ order, onPress, onAccept }) => {
+    const [showConfirm, setShowConfirm] = useState(false);
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-US", {
@@ -13,6 +15,16 @@ const OrderCard = ({ order, onPress, onAccept }) => {
       day: "2-digit",
       year: "numeric",
     }).format(date);
+  };
+
+  
+  const handleAcceptPress = () => {
+    setShowConfirm(true);
+  };
+
+  const confirmAccept = () => {
+    setShowConfirm(false);
+    if (onAccept) onAccept();
   };
 
   return (
@@ -38,7 +50,7 @@ const OrderCard = ({ order, onPress, onAccept }) => {
             <Text style={styles.infoText} numberOfLines={1}>{order.shop_name}</Text>
           </View>
           <View style={styles.infoRow}>
-            <FontAwesome5 name="location-arrow" size={15} color="#262757" />
+            <FontAwesome5 name="location-arrow" size={15} color="#08B341" />
             <Text style={styles.infoText} numberOfLines={2}>
               {order.delivery_address}
             </Text>
@@ -60,12 +72,41 @@ const OrderCard = ({ order, onPress, onAccept }) => {
 
         {/* --- MODIFICATION START: Accept Button for New Orders --- */}
         {order.order_status === 1 && (
-          <TouchableOpacity style={styles.acceptButton} onPress={onAccept}>
+          <TouchableOpacity style={styles.acceptButton} onPress={handleAcceptPress}>
             <Text style={styles.acceptButtonText}>Accept Order</Text>
           </TouchableOpacity>
         )}
         {/* --- MODIFICATION END --- */}
       </View>
+       {/* ✅ Confirmation Modal */}
+      <Modal
+        visible={showConfirm}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowConfirm(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitle}>Accept this order?</Text>
+            <Text style={styles.modalMessage}>
+              Once accepted, this order will be assigned to you.
+            </Text>
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalBtn, styles.cancelBtn]}
+                onPress={() => setShowConfirm(false)}>
+                <Text style={styles.cancelText}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.modalBtn, styles.confirmBtn]}
+                onPress={confirmAccept}>
+                <Text style={styles.confirmText}>Yes, Accept</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </TouchableOpacity>
   );
 };
@@ -82,6 +123,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4, // Reduced shadow radius
     elevation: 4,
+    borderWidth: 0.5,
+  borderColor: 'rgba(0,0,0,0.05)',
   },
   orderHeader: {
     flexDirection: 'row',
@@ -150,6 +193,63 @@ const styles = StyleSheet.create({
   acceptButtonText: {
     color: '#fff',
     fontSize: 15,
+    fontWeight: 'bold',
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalBox: {
+    backgroundColor: '#fff',
+    width: '80%',
+    borderRadius: 12,
+    padding: 25,
+    elevation: 6,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  modalMessage: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 25,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  modalBtn: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginHorizontal: 8,
+    minWidth: 100,
+    alignItems: 'center',
+
+  },
+  cancelBtn: {
+    backgroundColor: '#eee',
+  },
+  confirmBtn: {
+    backgroundColor: '#27ae60',
+  },
+  cancelText: {
+    color: '#333',
+    fontWeight: 'bold',
+  },
+  confirmText: {
+    color: '#fff',
     fontWeight: 'bold',
   },
 });
