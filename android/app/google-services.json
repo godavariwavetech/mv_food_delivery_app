@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "634386234201",
-    "project_id": "me-local-app",
-    "storage_bucket": "me-local-app.firebasestorage.app"
+    "project_number": "936864353739",
+    "project_id": "varadhifoods",
+    "storage_bucket": "varadhifoods.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:634386234201:android:ebf05a2212f658f8b92a48",
+        "mobilesdk_app_id": "1:936864353739:android:e6a846fb4b1717fab2ba4e",
         "android_client_info": {
-          "package_name": "com.melocal"
+          "package_name": "com.varadhifood"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyArsOTmS9uWSNjAxB0OqRQgO7medWFWeZA"
+          "current_key": "AIzaSyCfLeUcg3a_pQJWR1IvEB_q3eN7BFei5iw"
         }
       ],
       "services": {
@@ -26,7 +26,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:634386234201:android:4324ad353fc9246bb92a48",
+        "mobilesdk_app_id": "1:936864353739:android:6cca295d63d3250fb2ba4e",
         "android_client_info": {
           "package_name": "com.varadhipartner"
         }
@@ -34,7 +34,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyArsOTmS9uWSNjAxB0OqRQgO7medWFWeZA"
+          "current_key": "AIzaSyCfLeUcg3a_pQJWR1IvEB_q3eN7BFei5iw"
         }
       ],
       "services": {

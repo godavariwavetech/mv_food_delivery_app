@@ -60,7 +60,6 @@ const ApiService = {
     try {
       console.log(user,">>>>>>>>>>>>>>>>>>>>>>>>>User");
       const response = await apiClient.post('/getcurrentorders', user);
-            console.log(response,">>>>>>>>>>>>>>resposnemnsmnrmsnermsnmrnsemnrmesn");
 
       return response.data;
     } catch (error) {

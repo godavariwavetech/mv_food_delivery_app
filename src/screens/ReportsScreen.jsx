@@ -26,6 +26,7 @@ const ReportsScreen = () => {
       const formattedStart = startDate.toISOString().split('T')[0];
       const formattedEnd = endDate.toISOString().split('T')[0];
       const response = await ApiService.getReports(user?.id, formattedStart, formattedEnd);
+      console.log(response,">>>>>>>>>>>>>>>>>responseeee reports");
       setReports(response.data.data);
     } catch (error) {
       console.error('Error fetching reports:', error);

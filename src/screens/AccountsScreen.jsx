@@ -34,6 +34,7 @@ const AccountsScreen = () => {
       setLoading(true);
       setError(false);
       const response = await ApiService.getReportingHistory(user?.id);
+      console.log(response.data.data[0],"???????????????????response.data.data[0]Accounts");
       setPaymentSummary(response.data.data[0] || {});
     } catch (error) {
       console.error('Error fetching reporting history:', error);

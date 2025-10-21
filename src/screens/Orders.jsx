@@ -195,7 +195,6 @@ const OrdersScreen = ({navigation}) => {
         !showLoad && setRefreshing(true);
 
         const response = await ApiService.getOrders(user);
-        console.log(response, '>>>>>>>>>>>>>>>>>>>>>>>>response orders');
         if (response?.status === 200) {
           setOrders(response.data);
 
@@ -215,7 +214,6 @@ const OrdersScreen = ({navigation}) => {
     [user],
   );
 
-  console.log(newOrders, ongoingOrders, '>>>>>>>>>>>>>>>>>>>ONGOJNG');
 
   useFocusEffect(
     useCallback(() => {
