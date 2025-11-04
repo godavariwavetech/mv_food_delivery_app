@@ -97,14 +97,22 @@ const ReportsScreen = () => {
             <Text style={styles.detailLabel}>Total Orders</Text>
             <Text style={styles.detailValue}>{item.total_orders}</Text>
           </View>
-          <View style={styles.detailRow}>
+          {/* <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Order IDs</Text>
             <View style={styles.orderIdsContainer}>
               {JSON.parse(item.order_ids.replace(/"/g, '')).map((id) => (
                 <Text key={id} style={styles.orderId}>#{id}</Text>
               ))}
             </View>
+          </View> */}
+
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Amount Per Order</Text>
+            <Text style={styles.detailValue}>{item.amount_per_order}</Text>
           </View>
+
+
+          
         </View>
 
         {/* Payment Breakdown */}
@@ -131,10 +139,10 @@ const ReportsScreen = () => {
 
         {/* Totals */}
         <View style={styles.section}>
-          <View style={styles.detailRow}>
+          {/* <View style={styles.detailRow}>
             <Text style={[styles.detailLabel, { fontSize: 16 }]}>Total Amount</Text>
             <Text style={[styles.detailValue, { fontSize: 16 }]}>₹{item.total_amount}</Text>
-          </View>
+          </View> */}
           <View style={styles.detailRow}>
             <Text style={[styles.detailLabel, { color: '#08B341' }]}>Net Payment</Text>
             <Text style={[styles.detailValue, { color: '#08B341', fontWeight: '700' }]}>
@@ -159,6 +167,8 @@ const ReportsScreen = () => {
       setEndDate(selectedDate);
     }
   };
+
+  console.log(reports,">>>>>>>>>>>>>>>>REPORTSSSSSS");
 
   return (
     <View style={styles.container}>

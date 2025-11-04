@@ -64,6 +64,8 @@ const AccountsScreen = () => {
 
   // console.log(object);
 
+  console.log(paymentSummary,">>>>>>>>>>>>>>>>>>>>>>>paymentSummary");
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -199,13 +201,13 @@ const AccountsScreen = () => {
                   size={20}
                   color="#FF9800"
                 />
-                <Text style={styles.methodText}>Delivery Charges</Text>
+                <Text style={styles.methodText}>Amount Per Order</Text>
                 <View style={styles.paymentDetails}>
                   <Text style={styles.detailText}>
                     {paymentSummary.total_orders} orders
                   </Text>
                   <Text style={styles.detailText}>
-                    ₹{paymentSummary.delivery_charges}
+                    ₹{paymentSummary?.deliveryboy_order_amount}
                   </Text>
                 </View>
               </View>
@@ -265,10 +267,10 @@ const AccountsScreen = () => {
                     style={[
                       styles.detailText,
                       styles.finalAmount,
-                      {color: finalPaymentAmount >= 0 ? '#08B341' : '#dc3545'},
+                      {color: paymentSummary?.total_deliveryboy_amount >= 0 ? '#08B341' : '#dc3545'},
                     ]}>
-                    ₹ {finalPaymentAmount >= 0 ? '+' : '-'}
-                    {Math.abs(finalPaymentAmount).toFixed(2)}
+                    ₹ {paymentSummary?.total_deliveryboy_amount >= 0 ? '+' : '-'}
+                    {paymentSummary?.total_deliveryboy_amount}
                   </Text>
                 </View>
               </View>
