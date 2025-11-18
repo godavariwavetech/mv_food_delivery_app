@@ -140,7 +140,7 @@ const AccountsScreen = () => {
                 <View style={styles.totalRow}>
                   <Text style={styles.totalLabel}>Total Amount:</Text>
                   <Text style={styles.totalValue}>
-                    ₹{paymentSummary?.total_amount || 0}
+                    ₹{paymentSummary?.total_amount?.toFixed(0) || 0}
                   </Text>
                 </View>
               </View>
@@ -166,10 +166,10 @@ const AccountsScreen = () => {
                 <Text style={styles.methodText}>COD Orders</Text>
                 <View style={styles.paymentDetails}>
                   <Text style={styles.detailText}>
-                    {paymentSummary.cod_count} orders
+                    {paymentSummary?.cod_count} orders
                   </Text>
                   <Text style={styles.detailText}>
-                    ₹{paymentSummary.cod_amount}
+                    ₹{paymentSummary?.cod_amount?.toFixed(0)}
                   </Text>
                 </View>
               </View>
@@ -185,10 +185,10 @@ const AccountsScreen = () => {
                 <Text style={styles.methodText}>Online Orders</Text>
                 <View style={styles.paymentDetails}>
                   <Text style={styles.detailText}>
-                    {paymentSummary.pay_online_count} orders
+                    {paymentSummary?.pay_online_count} orders
                   </Text>
                   <Text style={styles.detailText}>
-                    ₹{paymentSummary.pay_online_amount}
+                    ₹{paymentSummary?.pay_online_amount?.toFixed(0)}
                   </Text>
                 </View>
               </View>
@@ -252,7 +252,7 @@ const AccountsScreen = () => {
                     {paymentSummary.cod_count} orders
                   </Text>
                   <Text style={[styles.detailText, {color: '#08B341'}]}>
-                    ₹{paymentSummary.cod_amount}
+                    ₹{paymentSummary.cod_amount?.toFixed(0)}
                   </Text>
                 </View>
               </View>

@@ -37,6 +37,8 @@ const CODSettlementsScreen = () => {
         ApiService.getCODSettledHistory(user?.id)
       ]);
 
+      console.log(historyResponse,">>>>>>>>>>>>>>>>>>>.historyResponse");
+
       if (amountsResponse.length > 0) {
         setCodSummary(amountsResponse[0]); 
       } else {
