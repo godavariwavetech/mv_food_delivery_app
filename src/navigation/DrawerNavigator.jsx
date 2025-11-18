@@ -15,6 +15,7 @@ import ReportsScreen from '../screens/ReportsScreen';
 import DeleteAccountScreen from '../screens/DeleteAccountScreen';
 // --- ⬇️ 1. Import the new Terms and Conditions screen ---
 import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
+import CODSettlementsScreen from '../screens/CODSettlementsScreen';
 
 
 const Drawer = createDrawerNavigator();
@@ -32,7 +33,7 @@ const ProfileStack = () => {
 
 const DrawerNavigator = () => {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#08B341" }}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#08B341'}}>
       <Drawer.Navigator
         initialRouteName="Home"
         screenOptions={{
@@ -40,18 +41,17 @@ const DrawerNavigator = () => {
             backgroundColor: '#FFFFFF', // White background
           },
           headerShown: false,
-          drawerActiveBackgroundColor: "#08B341", // Light Lime #08B341
-          drawerActiveTintColor: "#FFFFFF", // White text/icons for active item
-          drawerInactiveTintColor: "#333333", // Dark gray for inactive text/icons
-          drawerLabelStyle: { fontSize: 16, fontWeight: 'bold' },
-        }}
-      >
+          drawerActiveBackgroundColor: '#08B341', // Light Lime #08B341
+          drawerActiveTintColor: '#FFFFFF', // White text/icons for active item
+          drawerInactiveTintColor: '#333333', // Dark gray for inactive text/icons
+          drawerLabelStyle: {fontSize: 16, fontWeight: 'bold'},
+        }}>
         {/* Orders Screen */}
         <Drawer.Screen
           name="Home"
           component={OrdersScreen}
           options={{
-            drawerIcon: ({ color }) => (
+            drawerIcon: ({color}) => (
               <MaterialIcons name="list" size={22} color={color} />
             ),
           }}
@@ -62,7 +62,7 @@ const DrawerNavigator = () => {
           name="Completed Orders"
           component={CompletedOrders}
           options={{
-            drawerIcon: ({ color }) => (
+            drawerIcon: ({color}) => (
               <MaterialIcons name="check-circle" size={22} color={color} />
             ),
           }}
@@ -73,7 +73,7 @@ const DrawerNavigator = () => {
           name="Payments History"
           component={AccountsScreen}
           options={{
-            drawerIcon: ({ color }) => (
+            drawerIcon: ({color}) => (
               <MaterialIcons
                 name="account-balance-wallet"
                 size={22}
@@ -83,12 +83,22 @@ const DrawerNavigator = () => {
           }}
         />
 
+        <Drawer.Screen
+          name="COD Settlements"
+          component={CODSettlementsScreen}
+          options={{
+            drawerIcon: ({color}) => (
+              <MaterialIcons name="attach-money" size={22} color={color} />
+            ),
+          }}
+        />
+
         {/* Reports */}
         <Drawer.Screen
           name="Reports"
           component={ReportsScreen}
           options={{
-            drawerIcon: ({ color }) => (
+            drawerIcon: ({color}) => (
               <MaterialIcons name="work-history" size={22} color={color} />
             ),
           }}
@@ -99,16 +109,16 @@ const DrawerNavigator = () => {
           name="Contact Details"
           component={Contact}
           options={{
-            drawerIcon: ({ color }) => (
+            drawerIcon: ({color}) => (
               <MaterialIcons name="phone" size={22} color={color} />
             ),
           }}
         />
-                <Drawer.Screen
+        <Drawer.Screen
           name="Terms & Conditions"
           component={TermsAndConditionsScreen}
           options={{
-            drawerIcon: ({ color }) => (
+            drawerIcon: ({color}) => (
               <MaterialIcons name="description" size={22} color={color} />
             ),
           }}
@@ -119,7 +129,7 @@ const DrawerNavigator = () => {
           name="Profile"
           component={ProfileStack}
           options={{
-            drawerIcon: ({ color }) => (
+            drawerIcon: ({color}) => (
               <MaterialIcons name="person" size={22} color={color} />
             ),
           }}
@@ -127,18 +137,16 @@ const DrawerNavigator = () => {
 
         {/* --- ⬇️ 2. Add the new screen to the drawer menu --- */}
 
-
         {/* Delete Account */}
         <Drawer.Screen
           name="Delete Account"
           component={DeleteAccountScreen}
           options={{
-            drawerIcon: ({ color }) => (
+            drawerIcon: ({color}) => (
               <MaterialIcons name="delete" size={22} color={color} />
             ),
           }}
         />
-        
       </Drawer.Navigator>
     </SafeAreaView>
   );

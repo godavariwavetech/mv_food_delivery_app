@@ -292,12 +292,10 @@ const CompletedOrdersScreen = ({ navigation }) => {
 
                   <View style={styles.column}>
                     <View style={styles.row}>
-                      <Ionicons name="location-outline" size={wp(6)} color="green" />
                       <Ionicons name="location-outline" size={wp(6)} color="#08B341" />
                       <Text style={styles.location}>{item.shop_name}</Text>
                     </View>
                     <View style={styles.row}>
-                      <Icon name="location-arrow" size={wp(5)} color="green" />
                       <Icon name="location-arrow" size={wp(5)} color="#08B341" />
                       <Text style={styles.location}>{item.delivery_address}</Text>
                     </View>

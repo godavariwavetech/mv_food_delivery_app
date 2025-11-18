@@ -3,7 +3,7 @@ import {Alert} from 'react-native';
 
 // Base API URL
 
-const API_BASE_URL ='https://varadhifood.com:2636/delivery_boy'
+const API_BASE_URL ='https://varadhifood.com:2336/delivery_boy'
 
 // Create Axios instance
 const apiClient = axios.create({
@@ -16,7 +16,7 @@ const apiClient = axios.create({
 
 // Create Axios instance
 const publicapiClient = axios.create({
-  baseURL: 'https://varadhifood.com:2636/public_app',
+  baseURL: 'https://varadhifood.com:2336/public_app',
   timeout: 10000, // 10 seconds timeout
   headers: {
     'Content-Type': 'application/json',
@@ -304,7 +304,29 @@ const ApiService = {
     } catch (error) {
       throw handleApiError(error)
     }
-  }
+  },
+  getCODAmounts: async (deliveryboy_id) => {
+    try {
+      const response = await apiClient.post('/getcodamounts', {
+        deliveryboy_id: deliveryboy_id,
+      });
+      console.log(response.data?.data,">>>>>>>>>>>>>>>>>>>>>>>>>>>>response.data?.data");
+      return response.data?.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  getCODSettledHistory: async (deliveryboy_id) => {
+    try {
+      const response = await apiClient.post('/getcodsettledhistory', {
+        deliveryboy_id: deliveryboy_id,
+      });
+      return response.data?.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 
 
 };
