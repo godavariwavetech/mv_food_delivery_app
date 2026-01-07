@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from 'react';
+import React, {useContext, useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -9,38 +9,50 @@ import {
   RefreshControl,
   SafeAreaView,
   StatusBar,
-  Platform
+  Platform,
+  Modal,
+  Image,
 } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { scale, moderateScale, verticalScale } from 'react-native-size-matters';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {scale, moderateScale, verticalScale} from 'react-native-size-matters';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import ApiService from '../services/apiservice';
-import { AuthContext } from '../context/AuthContext';
+import {AuthContext} from '../context/AuthContext';
 
 const CODSettlementsScreen = () => {
-  const { user } = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   const navigation = useNavigation();
-  
+
   const [codSummary, setCodSummary] = useState(null);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [activeImage, setActiveImage] = useState(null);
+
+  const handleImagePress = image => {
+    setActiveImage(image);
+    setModalVisible(true);
+  };
 
   const fetchData = async () => {
     try {
       if (!refreshing) setLoading(true);
-      
+
       const [amountsResponse, historyResponse] = await Promise.all([
         ApiService.getCODAmounts(user?.id),
-        ApiService.getCODSettledHistory(user?.id)
+        ApiService.getCODSettledHistory(user?.id),
       ]);
 
-      console.log(historyResponse,">>>>>>>>>>>>>>>>>>>.historyResponse");
+      console.log(historyResponse, '>>>>>>>>>>>>>>>>>>>.historyResponse');
 
       if (amountsResponse.length > 0) {
-        setCodSummary(amountsResponse[0]); 
+        setCodSummary(amountsResponse[0]);
       } else {
         setCodSummary(null);
       }
@@ -48,7 +60,6 @@ const CODSettlementsScreen = () => {
       if (Array.isArray(historyResponse)) {
         setHistory(historyResponse);
       }
-      
     } catch (error) {
       console.error('Error fetching COD settlements:', error);
     } finally {
@@ -60,7 +71,7 @@ const CODSettlementsScreen = () => {
   useFocusEffect(
     useCallback(() => {
       fetchData();
-    }, [user?.id])
+    }, [user?.id]),
   );
 
   const onRefresh = () => {
@@ -68,41 +79,63 @@ const CODSettlementsScreen = () => {
     fetchData();
   };
 
-  const renderHistoryItem = ({ item }) => {
+  const renderHistoryItem = ({item}) => {
     const isApproved = item.settlement_status_text === 'Approved';
 
     return (
       <View style={styles.historyCard}>
         <View style={styles.historyHeader}>
-           <View>
-              <Text style={styles.historyDate}>{item.settleddate || 'Date N/A'}</Text>
-              <Text style={styles.historySubId}>Transaction ID: #{item.id || '---'}</Text>
-           </View>
-           <View style={[styles.statusBadge, { backgroundColor: isApproved ? '#E8F5E9' : '#FFF3E0' }]}>
+          <View>
+            <Text style={styles.historyDate}>
+              {item.settleddate || 'Date N/A'}
+            </Text>
+            {/* <Text style={styles.historySubId}>Transaction ID: #{item.id || '---'}</Text> */}
+          </View>
+
+          {item.payment_image ? (
+            <TouchableOpacity
+              style={styles.imageButton}
+              onPress={() => handleImagePress(item.payment_image)}>
+              <MaterialCommunityIcons
+                name="image-outline"
+                size={22}
+                color="#08B341"
+              />
+              <Text style={styles.viewImageText}>payment image</Text>
+            </TouchableOpacity>
+          ) : null}
+
+          {/* <View style={[styles.statusBadge, { backgroundColor: isApproved ? '#E8F5E9' : '#FFF3E0' }]}>
               <Text style={[styles.statusText, { color: isApproved ? '#1B5E20' : '#E65100' }]}>
                  {item.settlement_status_text || 'Pending'}
               </Text>
-           </View>
+           </View> */}
         </View>
 
         <View style={styles.cardDivider} />
 
         <View style={styles.historyBody}>
-           <View style={styles.historyInfoBlock}>
-              <Text style={styles.historyLabel}>Amount</Text>
-              <Text style={styles.historyAmount}>₹{item.cod_amount}</Text>
-           </View>
-           <View style={styles.historyInfoBlock}>
-              <Text style={styles.historyLabel}>Orders</Text>
-              <Text style={styles.historyValue}>{item.cod_orders}</Text>
-           </View>
-           <View style={styles.historyInfoBlock}>
-              <Text style={styles.historyLabel}>Settlement OTP</Text>
-              <View style={styles.historyOtpContainer}>
-                 <MaterialCommunityIcons name="shield-check-outline" size={14} color="#08B341" />
-                 <Text style={styles.historyOtpText}>{item.cod_settlement_otp || '---'}</Text>
-              </View>
-           </View>
+          <View style={styles.historyInfoBlock}>
+            <Text style={styles.historyLabel}>Amount</Text>
+            <Text style={styles.historyAmount}>₹{item.cod_amount}</Text>
+          </View>
+          <View style={styles.historyInfoBlock}>
+            <Text style={styles.historyLabel}>Orders</Text>
+            <Text style={styles.historyValue}>{item.cod_orders}</Text>
+          </View>
+          <View style={styles.historyInfoBlock}>
+            <Text style={styles.historyLabel}>Settlement OTP</Text>
+            <View style={styles.historyOtpContainer}>
+              <MaterialCommunityIcons
+                name="shield-check-outline"
+                size={14}
+                color="#08B341"
+              />
+              <Text style={styles.historyOtpText}>
+                {item.cod_settlement_otp || '---'}
+              </Text>
+            </View>
+          </View>
         </View>
       </View>
     );
@@ -113,39 +146,47 @@ const CODSettlementsScreen = () => {
       {/* Premium Summary Card */}
       <View style={styles.summaryCard}>
         <View style={styles.summaryTop}>
-           <View>
-              <Text style={styles.summaryLabel}>Total Cash in Hand</Text>
-              {codSummary?.date_range && (
-                 <Text style={styles.summaryDateRange}>{codSummary.date_range}</Text>
-              )}
-           </View>
-           {/* <View style={styles.iconCircle}>
+          <View>
+            <Text style={styles.summaryLabel}>Total Cash in Hand</Text>
+            {codSummary?.date_range && (
+              <Text style={styles.summaryDateRange}>
+                {codSummary.date_range}
+              </Text>
+            )}
+          </View>
+          {/* <View style={styles.iconCircle}>
               <MaterialCommunityIcons name="wallet" size={24} color="#08B341" />
            </View> */}
         </View>
 
-        <Text style={styles.summaryAmount}>₹{codSummary?.cod_amount || '0.00'}</Text>
+        <Text style={styles.summaryAmount}>
+          ₹{codSummary?.cod_amount || '0.00'}
+        </Text>
 
         <View style={styles.summaryStatsRow}>
-            <View style={styles.statItem}>
-                <Text style={styles.statValue}>{codSummary?.cod_count || '0'}</Text>
-                <Text style={styles.statLabel}>Pending Orders</Text>
-            </View>
-            <View style={styles.verticalDivider} />
-            <View style={styles.statItem}>
-                <Text style={styles.statValue}>₹{codSummary?.total_amount || '0'}</Text>
-                <Text style={styles.statLabel}>Total Value</Text>
-            </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statValue}>{codSummary?.cod_count || '0'}</Text>
+            <Text style={styles.statLabel}>Pending Orders</Text>
+          </View>
+          <View style={styles.verticalDivider} />
+          <View style={styles.statItem}>
+            <Text style={styles.statValue}>
+              ₹{codSummary?.total_amount || '0'}
+            </Text>
+            <Text style={styles.statLabel}>Total Value</Text>
+          </View>
         </View>
 
         {/* OTP Box - Glassmorphism Style */}
         {codSummary?.cod_settlement_otp ? (
           <View style={styles.otpBox}>
-             <Text style={styles.otpTitle}>VERIFY SETTLEMENT</Text>
-             <View style={styles.otpRow}>
-                <Text style={styles.otpCode}>{codSummary.cod_settlement_otp}</Text>
-                {/* <MaterialCommunityIcons name="content-copy" size={18} color="rgba(255,255,255,0.8)" style={{marginLeft: 10}} /> */}
-             </View>
+            <Text style={styles.otpTitle}>VERIFY SETTLEMENT</Text>
+            <View style={styles.otpRow}>
+              <Text style={styles.otpCode}>
+                {codSummary.cod_settlement_otp}
+              </Text>
+              {/* <MaterialCommunityIcons name="content-copy" size={18} color="rgba(255,255,255,0.8)" style={{marginLeft: 10}} /> */}
+            </View>
           </View>
         ) : null}
       </View>
@@ -159,15 +200,17 @@ const CODSettlementsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-       <StatusBar backgroundColor="#08B341" barStyle="light-content" />
-      
+      <StatusBar backgroundColor="#08B341" barStyle="light-content" />
+
       {/* Professional Navbar */}
       <View style={styles.navbar}>
-        <TouchableOpacity style={styles.navButton} onPress={() => navigation.openDrawer()}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.openDrawer()}>
           <Ionicons name="menu" size={26} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.navTitle}>COD Settlements</Text>
-        <View style={styles.navButton} /> 
+        <View style={styles.navButton} />
       </View>
 
       {loading ? (
@@ -178,7 +221,7 @@ const CODSettlementsScreen = () => {
         <FlatList
           data={history}
           renderItem={renderHistoryItem}
-          keyExtractor={(item, index) => index.toString()} 
+          keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.listContent}
           ListHeaderComponent={ListHeader}
           showsVerticalScrollIndicator={false}
@@ -192,12 +235,41 @@ const CODSettlementsScreen = () => {
           }
           ListEmptyComponent={
             <View style={styles.emptyState}>
-              <MaterialCommunityIcons name="file-document-outline" size={60} color="#CFD8DC" />
+              <MaterialCommunityIcons
+                name="file-document-outline"
+                size={60}
+                color="#CFD8DC"
+              />
               <Text style={styles.emptyText}>No settlements yet</Text>
             </View>
           }
         />
       )}
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalContainer}>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setModalVisible(false)}
+            hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+            <Ionicons name="close-circle" size={40} color="#fff" />
+          </TouchableOpacity>
+
+          <View style={styles.modalContent}>
+            {activeImage && (
+              <Image
+                source={{uri: activeImage}}
+                style={styles.fullScreenImage}
+                resizeMode="contain"
+              />
+            )}
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -216,7 +288,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#08B341',
     elevation: 4,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.15,
     shadowRadius: 3,
     zIndex: 10,
@@ -243,7 +315,7 @@ const styles = StyleSheet.create({
     padding: moderateScale(16),
     paddingBottom: verticalScale(8),
   },
-  
+
   // --- Premium Summary Card ---
   summaryCard: {
     backgroundColor: '#08B341', // Brand Green
@@ -252,7 +324,7 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(20),
     // Sophisticated Shadow
     shadowColor: '#08B341',
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: {width: 0, height: 8},
     shadowOpacity: 0.25,
     shadowRadius: 12,
     elevation: 8,
@@ -367,7 +439,7 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(12),
     // Soft Shadow
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.06,
     shadowRadius: 6,
     elevation: 3,
@@ -453,6 +525,44 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: scale(15),
     fontWeight: '500',
+  },
+
+  // --- Image Modal & Button ---
+  imageButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E8F5E9',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  viewImageText: {
+    fontSize: scale(10),
+    color: '#08B341',
+    fontWeight: '600',
+    marginLeft: 4,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 50 : 30,
+    right: 20,
+    zIndex: 2,
+  },
+  modalContent: {
+    width: wp(100),
+    height: hp(80),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullScreenImage: {
+    width: '100%',
+    height: '100%',
   },
 });
 

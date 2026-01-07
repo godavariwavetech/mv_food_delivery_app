@@ -299,7 +299,9 @@ const OrdersScreen = ({navigation}) => {
               : 'Welcome'}
           </Text>
         </View>
-        {acceptedOrders?.length === 0 && (
+        {
+        // acceptedOrders?.length === 0 && 
+        (
           <ToggleSwitch toggle={toggle} setToggle={setToggle} />
         )}
       </View>
