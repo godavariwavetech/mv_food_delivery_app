@@ -57,6 +57,31 @@ const OrderCard = ({ order, onPress, onAccept }) => {
           </View>
         </View>
 
+        {/* Order/Delivery Instructions */}
+        {(order.order_instructions || order.delivery_instructions) && (
+          <>
+            <Separator />
+            <View style={styles.instructionsSection}>
+              {order.order_instructions && (
+                <View style={styles.infoRow}>
+                  <FontAwesome5 name="clipboard-list" size={14} color="#F39C12" />
+                  <Text style={styles.infoText} numberOfLines={2}>
+                    {order.order_instructions}
+                  </Text>
+                </View>
+              )}
+              {order.delivery_instructions && (
+                <View style={styles.infoRow}>
+                  <FontAwesome5 name="truck" size={14} color="#3498DB" />
+                  <Text style={styles.infoText} numberOfLines={2}>
+                    {order.delivery_instructions}
+                  </Text>
+                </View>
+              )}
+            </View>
+          </>
+        )}
+
         {/* Driver's Earnings */}
         {order.delivery_charges && (
           <>
@@ -153,6 +178,9 @@ const styles = StyleSheet.create({
   },
   addressSection: {
     marginVertical: 8, // Reduced margin
+  },
+  instructionsSection: {
+    marginVertical: 8,
   },
   infoRow: {
     flexDirection: 'row',

@@ -43,6 +43,7 @@ export const getFCMToken = async () => {
   const token = await messaging().getToken();
   console.log(token)
   messaging().onMessage(async (remoteMessage) => {
+    console.log('Notification sound triggered');
 
     await notifee.displayNotification({
       title: remoteMessage.notification.title,

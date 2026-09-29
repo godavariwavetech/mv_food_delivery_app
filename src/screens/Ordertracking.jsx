@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useContext} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   Text,
@@ -7,27 +7,18 @@ import {
   TouchableOpacity,
   Image,
   Modal,
-  TextInput,
-  Dimensions,
   Alert,
   Linking,
-  TouchableWithoutFeedback,
-  Keyboard,
   StatusBar,
   Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {moderateScale} from 'react-native-size-matters';
 import ApiService from '../services/apiservice';
 import {AuthContext} from '../context/AuthContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-const {width} = Dimensions.get('window');
 
 // --- UI Theme & Colors ---
 const theme = {
@@ -70,11 +61,7 @@ const OrderTrackingScreen = ({route}) => {
 
   const [orderStatus, setOrderStatus] = useState(orderDetails.order_status);
   const [orderItems, setOrderItems] = useState(null);
-  const [showOtpModal, setShowOtpModal] = useState(false);
-  const [otp, setOtp] = useState(['', '', '', '']);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-
-  const otpInputs = useRef([]);
 
   const insets = useSafeAreaInsets()
 
@@ -113,27 +100,6 @@ const OrderTrackingScreen = ({route}) => {
   };
 
   // --- API Handlers ---
-  const handleOtpChange = (index, value) => {
-    if (isNaN(value)) return;
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-    if (value && index < 3) otpInputs.current[index + 1].focus();
-  };
-
-  const handleOtpSubmit = () => {
-    const enteredOtp = otp.join('');
-    // OTP is now only for the customer
-    const targetOtp = orderDetails.customer_otp;
-
-    if (enteredOtp.length === 4 && enteredOtp === targetOtp) {
-      completedOrder();
-      setOtp(['', '', '', '']);
-    } else {
-      Alert.alert('Error', 'The entered OTP is incorrect.');
-    }
-  };
-
   const accepteSubmmited = () => {
     setShowConfirmModal(true);
   };
@@ -171,7 +137,7 @@ const OrderTrackingScreen = ({route}) => {
       const response = await ApiService.vendorReceived(payload);
       if (response?.status === 200) {
         setOrderStatus(2);
-        setShowOtpModal(false);
+        // setShowOtpModal(false);
       } else {
         Alert.alert('Error', response?.message || 'Failed to update status.');
       }
@@ -184,14 +150,12 @@ const OrderTrackingScreen = ({route}) => {
     const payload = {
       order_id: orderDetails.order_id,
       delivery_id: user.id,
-      delivery_otp: otp.join(''),
       customer_id: orderDetails?.customer_id,
     };
     try {
       const response = await ApiService.completedorder(payload);
       if (response?.status === 200) {
         setOrderStatus(3);
-        setShowOtpModal(false);
         // Delay navigation to allow user to see completed status
         setTimeout(() => navigation.goBack(), 1000);
       } else {
@@ -203,7 +167,14 @@ const OrderTrackingScreen = ({route}) => {
   };
 
   const handleCompletePress = () => {
-    setShowOtpModal(true);
+    Alert.alert(
+      'Confirm Delivery',
+      'Are you sure you have delivered the order to the customer?',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'Confirm', onPress: completedOrder},
+      ],
+    );
   };
 
   const handlePickup = () => {
@@ -428,6 +399,40 @@ const OrderTrackingScreen = ({route}) => {
           />
         </InfoCard>
 
+        {/* --- Order/Delivery Instructions (Hidden on completion) --- */}
+        {orderStatus !== 3 &&
+          (orderDetails.order_instructions ||
+            orderItems?.order_instructions ||
+            orderDetails.delivery_instructions ||
+            orderItems?.delivery_instructions) && (
+            <InfoCard title="Instructions" icon="information-circle-outline">
+              {(orderDetails.order_instructions ||
+                orderItems?.order_instructions) && (
+                <View style={styles.instructionBlock}>
+                  <Text style={styles.instructionLabel}>
+                    Order Instructions
+                  </Text>
+                  <Text style={styles.instructionValue}>
+                    {orderDetails.order_instructions ||
+                      orderItems?.order_instructions}
+                  </Text>
+                </View>
+              )}
+              {(orderDetails.delivery_instructions ||
+                orderItems?.delivery_instructions) && (
+                <View style={styles.instructionBlock}>
+                  <Text style={styles.instructionLabel}>
+                    Delivery Instructions
+                  </Text>
+                  <Text style={styles.instructionValue}>
+                    {orderDetails.delivery_instructions ||
+                      orderItems?.delivery_instructions}
+                  </Text>
+                </View>
+              )}
+            </InfoCard>
+          )}
+
         {/* --- Restaurant & Customer Details (Hidden on completion) --- */}
         {orderStatus !== 3 && (
           <>
@@ -506,6 +511,7 @@ const OrderTrackingScreen = ({route}) => {
                 <Text style={styles.itemName}>{item.item_name}</Text>
                 <Text style={styles.itemQty}>
                   Quantity: {item.sub_item_count}
+                  {item.measurement_type ? ` (${item.measurement_type})` : ''}
                 </Text>
               </View>
             </View>
@@ -514,50 +520,6 @@ const OrderTrackingScreen = ({route}) => {
       </ScrollView>
 
       <View style={[styles.footer,{bottom:insets.bottom}]}>{getAction()}</View>
-
-      {/* --- OTP Modal --- */}
-      <Modal visible={showOtpModal} transparent animationType="fade">
-        <TouchableWithoutFeedback onPress={() => setShowOtpModal(false)}>
-          <View style={styles.modalContainer}>
-            <TouchableWithoutFeedback>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalTitle}>Enter OTP</Text>
-                <Text style={styles.modalSubtitle}>
-                  Please enter the OTP from the customer to complete the
-                  delivery.
-                </Text>
-                <View style={styles.otpContainer}>
-                  {otp.map((digit, index) => (
-                    <TextInput
-                      key={index}
-                      style={styles.otpInput}
-                      value={digit}
-                      onChangeText={value => handleOtpChange(index, value)}
-                      maxLength={1}
-                      keyboardType="numeric"
-                      ref={ref => (otpInputs.current[index] = ref)}
-                      onKeyPress={({nativeEvent}) => {
-                        if (
-                          nativeEvent.key === 'Backspace' &&
-                          !digit &&
-                          index > 0
-                        ) {
-                          otpInputs.current[index - 1].focus();
-                        }
-                      }}
-                    />
-                  ))}
-                </View>
-                <TouchableOpacity
-                  onPress={handleOtpSubmit}
-                  style={styles.modalButton}>
-                  <Text style={styles.modalButtonText}>Submit</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
 
       {/* --- Confirmation Modal --- */}
       <Modal
@@ -675,6 +637,19 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     marginTop: 4,
   },
+  instructionBlock: {
+    marginBottom: theme.spacing.m,
+  },
+  instructionLabel: {
+    fontSize: theme.typography.caption,
+    color: theme.colors.textSecondary,
+    marginBottom: 2,
+  },
+  instructionValue: {
+    fontSize: theme.typography.body,
+    color: theme.colors.textPrimary,
+    fontWeight: '500',
+  },
   highlightedEarning: {
     backgroundColor: '#FFF8E1',
     borderRadius: 8,
@@ -785,61 +760,6 @@ progressContainer: {
     fontWeight: '700',
     marginLeft: theme.spacing.s,
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-  },
-  modalContent: {
-    width: '85%',
-    backgroundColor: theme.colors.card,
-    borderRadius: 15,
-    padding: theme.spacing.m * 1.5,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: theme.typography.title,
-    fontWeight: '700',
-    color: theme.colors.textPrimary,
-    marginBottom: theme.spacing.s,
-  },
-  modalSubtitle: {
-    fontSize: theme.typography.body,
-    color: theme.colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: theme.spacing.m,
-  },
-  otpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: theme.spacing.m * 1.5,
-  },
-  otpInput: {
-    width: width * 0.12,
-    height: width * 0.12,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    textAlign: 'center',
-    fontSize: moderateScale(18),
-    marginHorizontal: width * 0.015,
-    borderRadius: 10,
-    color: theme.colors.textPrimary,
-    backgroundColor: theme.colors.background,
-  },
-  modalButton: {
-    backgroundColor: theme.colors.primary,
-    paddingVertical: hp(1.5),
-    borderRadius: 10,
-    width: '100%',
-    alignItems: 'center',
-  },
-  modalButtonText: {
-    color: 'white',
-    fontSize: theme.typography.body,
-    fontWeight: 'bold',
-  },
-
   // --- Confirmation Modal Styles ---
   modalOverlay: {
     flex: 1,

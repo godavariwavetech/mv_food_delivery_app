@@ -328,6 +328,37 @@ const ApiService = {
     }
   },
 
+  // 🔹 Pending Amount screen
+  getPendingAmountSummary: async (deliveryboy_id) => {
+    try {
+      const response = await apiClient.post('/getpendingamountsummary', {
+        deliveryboy_id: deliveryboy_id,
+      });
+      return response.data?.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  getAdvanceRequestsForDeliveryBoy: async (deliveryboy_id) => {
+    try {
+      const response = await apiClient.get(`/advance-requests/${deliveryboy_id}`);
+      return response.data?.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  getCodSettlementHistory: async (deliveryboy_id) => {
+    try {
+      const response = await apiClient.post('/getcodsettlementhistory', {
+        deliveryboy_id: deliveryboy_id,
+      });
+      return response.data?.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,6 +17,9 @@ import DeleteAccountScreen from '../screens/DeleteAccountScreen';
 // --- ⬇️ 1. Import the new Terms and Conditions screen ---
 import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
 import CODSettlementsScreen from '../screens/CODSettlementsScreen';
+import PendingAmountScreen from '../screens/PendingAmountScreen';
+import PendingAmountHistoryScreen from '../screens/PendingAmountHistoryScreen';
+import RequestAdvanceScreen from '../screens/RequestAdvanceScreen';
 
 
 const Drawer = createDrawerNavigator();
@@ -30,6 +34,50 @@ const ProfileStack = () => {
     </Stack.Navigator>
   );
 };
+
+// Pending Amount Dashboard -> History -> Request Advance
+const PendingAmountStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="PendingAmountDashboard" component={PendingAmountScreen} />
+      <Stack.Screen name="PendingAmountHistory" component={PendingAmountHistoryScreen} />
+      <Stack.Screen name="RequestAdvance" component={RequestAdvanceScreen} />
+    </Stack.Navigator>
+  );
+};
+
+// "NEW" badge label for the Pending Amount drawer item
+const PendingAmountDrawerLabel = ({ color }) => (
+  <View style={badgeStyles.labelRow}>
+    <Text style={[badgeStyles.labelText, { color }]}>Advance Amount</Text>
+    <View style={badgeStyles.badge}>
+      <Text style={badgeStyles.badgeText}>NEW</Text>
+    </View>
+  </View>
+);
+
+const badgeStyles = StyleSheet.create({
+  labelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  labelText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  badge: {
+    backgroundColor: '#FF3B30',
+    borderRadius: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    marginLeft: 8,
+  },
+  badgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+});
 
 const DrawerNavigator = () => {
   return (
@@ -89,6 +137,20 @@ const DrawerNavigator = () => {
           options={{
             drawerIcon: ({color}) => (
               <MaterialIcons name="attach-money" size={22} color={color} />
+            ),
+          }}
+        />
+
+        {/* Pending Amount / Advance Usage (Nested Navigator) */}
+        <Drawer.Screen
+          name="Pending Amount"
+          component={PendingAmountStack}
+          options={{
+            drawerLabel: ({color}) => (
+              <PendingAmountDrawerLabel color={color} />
+            ),
+            drawerIcon: ({color}) => (
+              <MaterialIcons name="currency-rupee" size={22} color={color} />
             ),
           }}
         />
