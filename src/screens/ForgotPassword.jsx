@@ -117,7 +117,7 @@ const ForgotPassword = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
       <Image
-        source={require('../assets/foodtrail_delivery.png')}
+        source={require('../assets/mvLogo.jpeg')}
         style={styles.logo}
         resizeMode="contain"
       />
@@ -239,9 +239,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: moderateScale(20),
   },
   logo: {
-    width: 200,
-    height: 200,
-    marginBottom: verticalScale(30),
+    width: 300,
+    height: 240,
+    marginBottom: verticalScale(10),
     borderRadius: 10,
   },
   inputContainer: {

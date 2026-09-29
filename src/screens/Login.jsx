@@ -123,7 +123,7 @@ const LoginScreen = ({ navigation }) => {
           <View style={styles.container}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
             <Image
-        source={require('../assets/foodtrail_delivery.png')}
+        source={require('../assets/mvLogo.jpeg')}
               style={styles.logo}
               resizeMode="contain"
             />
@@ -238,9 +238,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: moderateScale(20),
   },
   logo: {
-    width: 200,
-    height: 150,
-    marginBottom: verticalScale(20),
+    width: 300,
+    height: 190,
+    marginBottom: verticalScale(10),
     borderRadius: 10,
   },
   inputContainer: {
@@ -256,11 +256,13 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(10),
     fontSize: scale(14),
     color: '#000',
+    paddingHorizontal: 20,
   },
   input2: {
     backgroundColor: '#f5f5f5',
     fontSize: scale(14),
     color: '#000',
+    paddingHorizontal: 20,
   },
   inputError: {
     borderColor: 'red',
