@@ -18,7 +18,7 @@ const apiClient = axios.create({
 // Create Axios instance
 const publicapiClient = axios.create({
   // baseURL: 'https://varadhifood.com:2636/public_app',
-  baseURL: 'https://ekart360.in:2020p',
+  baseURL: 'https://ekart360.in:2020',
   timeout: 10000, // 10 seconds timeout
   headers: {
     'Content-Type': 'application/json',
