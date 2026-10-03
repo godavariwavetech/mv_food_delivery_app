@@ -7,7 +7,8 @@ const SplashScreen = () => {
     <View style={styles.container}>
       {/* Logo Animation */}
       <Animated.View entering={FadeIn.duration(1500)}>
-        <Image source={require("../assets/foodtrail_delivery.png")} style={styles.logo} />
+        {/* <Image source={require("../assets/foodtrail_delivery.png")} style={styles.logo} /> */}
+         <Image source={require("../assets/multivendor.jpeg")} style={styles.logo} />
       </Animated.View>
 
       {/* App Name */}

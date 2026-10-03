@@ -123,7 +123,8 @@ const LoginScreen = ({ navigation }) => {
           <View style={styles.container}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
             <Image
-        source={require('../assets/foodtrail_delivery.png')}
+        // source={require('../assets/foodtrail_delivery.png')}
+        source={require('../assets/multivendor.jpeg')}
               style={styles.logo}
               resizeMode="contain"
             />
