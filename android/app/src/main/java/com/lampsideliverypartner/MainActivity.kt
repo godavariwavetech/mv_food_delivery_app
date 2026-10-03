@@ -1,4 +1,5 @@
-package com.varadhipartner
+package com.mvfoodpartner
+
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
